@@ -1,0 +1,32 @@
+name = "project_euler"
+description = "Project Euler support for Alice"
+version = "0.1.0-dev"
+website = "https://github.com/rocher/Alice/wiki"
+licenses = "MIT"
+tags = [
+"alice",
+"adventures",
+"learning",
+"mathematics",
+"project-euler"]
+authors = [
+"Francesc Rocher"
+]
+maintainers = [
+"Francesc Rocher <francesc.rocher@gmail.com>"
+]
+maintainers-logins = [
+"rocher"
+]
+[build-switches]
+"*".ada_version = ["-gnat2022", "-gnatX", "-gnatW8"]
+
+[[actions.'case(os)'.linux]]
+type = "post-fetch"
+command = ["/bin/bash", "-e", "action/update.sh"]
+
+[[depends-on]]
+ansiada = "^1.0.0"
+gnoga = "^2.1.2"
+parse_args = "~0.9.0"
+simple_logging = "^1.2.0"
