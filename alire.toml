@@ -17,7 +17,7 @@ tags = [
 "mathematics",
 "project-euler",
 ]
-version = "0.1.2-dev"
+version = "0.1.3-dev"
 website = "https://github.com/rocher/Alice/wiki"
 [build-switches]
 [build-switches."*"]
@@ -39,3 +39,5 @@ ansiada = "^1.0.0"
 gnoga = "^2.1.2"
 parse_args = "~0.9.0"
 simple_logging = "^1.2.0"
+
+# [EOF]
