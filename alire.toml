@@ -1,6 +1,6 @@
 name = "project_euler"
 description = "Project Euler support for Alice"
-version = "0.1.0-dev"
+version = "0.1.1-dev"
 website = "https://github.com/rocher/Alice/wiki"
 licenses = "MIT"
 tags = [
