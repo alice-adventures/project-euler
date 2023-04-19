@@ -11,7 +11,7 @@ if [ -d share ]; then
     git pull --all --tags --force
 else
     echo -e "\n-- Cloning share directory"
-    git clone git@github.com:alice-adventures/project-euler-share share
+    git clone git@github.com:alice-adventures/project_euler-share share
 fi
 
 # Update participant repositories

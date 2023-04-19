@@ -1,42 +1,32 @@
-authors = [
-"Francesc Rocher",
-]
-description = "Project Euler support for Alice"
-licenses = "MIT"
-maintainers = [
-"Francesc Rocher <francesc.rocher@gmail.com>",
-]
-maintainers-logins = [
-"rocher",
-]
 name = "project_euler"
+version = "0.1.5-dev"
+description = "Project Euler support for Alice"
+website = "https://github.com/alice-adventures/Alice/wiki"
+
+authors = ["Francesc Rocher"]
+maintainers = ["Francesc Rocher <francesc.rocher@gmail.com>"]
+maintainers-logins = ["rocher"]
+
+licenses = "MIT"
 tags = [
-"alice",
-"adventures",
-"learning",
-"mathematics",
-"project-euler",
+   "alice",
+   "adventures",
+   "learning",
+   "mathematics",
+   "problems",
+   "project-euler",
 ]
-version = "0.1.4-dev"
-website = "https://github.com/rocher/Alice/wiki"
-[build-switches]
+
 [build-switches."*"]
-ada_version = [
-"-gnat2022",
-"-gnatX",
-"-gnatW8",
-]
+ada_version = ["-gnat2022", "-gnatX", "-gnatW8"]
+
 [[actions]]
-command = [
-"/bin/bash",
-"-e",
-"action/update.sh",
-]
+command = ["/bin/bash", "-e", "action/update.sh"]
 directory = "."
 type = "post-fetch"
+
 [[depends-on]]
 ansiada = "^1.0.0"
 gnoga = "^2.1.2"
 parse_args = "~0.9.0"
 simple_logging = "^1.2.0"
-
