@@ -5,3 +5,5 @@
 /obj/
 /share/
 /tmp/
+/usr/**/
+^/usr/.keep
