@@ -16,7 +16,7 @@ package Project_Euler.GUI_Plotter.Canvas is
 
    type Canvas_Type is limited new Plotter_Type with private;
 
-   type Canvas_Name is (Back, Draw, Top);
+   type Canvas_Name is (Back, Draw, Info);
 
    function Canvas
      (P : Canvas_Type; Name : Canvas_Name)
@@ -36,6 +36,10 @@ package Project_Euler.GUI_Plotter.Canvas is
 
    overriding procedure Clear_Plot (P : in out Canvas_Type);
 
+   overriding procedure Set_Layer_Normal (P : in out Canvas_Type);
+
+   overriding procedure Set_Layer_Info (P : in out Canvas_Type);
+
    overriding procedure Set_Axes (P : in out Canvas_Type; Min, Max : Float);
 
    overriding procedure Set_Axes
@@ -52,15 +56,37 @@ package Project_Euler.GUI_Plotter.Canvas is
    overriding procedure Plot
      (P : in out Canvas_Type; Points : Point_List; Color : String);
 
-   overriding procedure Line
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float; color : String);
+   overriding procedure Line_Width (P : in out Canvas_Type; Width : Natural);
+
+   overriding procedure Line_Dash
+     (P : in out Canvas_Type; Length : Natural; Gap : Natural);
+
+   overriding procedure Stroke_color (P : in out Canvas_Type; Color : String);
+
+   overriding procedure Fill_Color (P : in out Canvas_Type; Color : String);
+
+   overriding procedure Line (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
 
    overriding procedure Rectangle
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float; color : String);
+     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
+
+   overriding procedure Fill_Rectangle
+     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
 
    overriding procedure Arc
      (P : in out Canvas_Type; X0, Y0, Radius, Start_Angle, End_Angle : Float;
       Color :        String);
+
+   overriding procedure Font
+     (P : in out Canvas_Type; Font : String; Height : String);
+
+   overriding procedure Text_Align (P : in out Canvas_Type; Align : String);
+
+   overriding procedure Text_Baseline
+     (P : in out Canvas_Type; Baseline : String);
+
+   overriding procedure Text
+     (P : in out Canvas_Type; X, Y : Float; Text : String);
 
 private
 

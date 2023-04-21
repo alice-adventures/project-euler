@@ -17,11 +17,31 @@ use Gnoga.Gui.Element.Canvas.Context_2D;
 
 package body Project_Euler.GUI_Plotter.Canvas is
 
+   Current_Canvas : Canvas_Name := Draw;
+
    Font_Family_Axis   : constant String  := "Arial";
-   Font_Height_Medium : constant String  := "12px";
-   Font_Height_Small  : constant String  := "10px";
-   Font_Size_Medium   : constant Natural := 12;
-   Font_Size_Small    : constant Natural := 10;
+   Font_Height_Small  : constant String  := "12px";
+   Font_Height_Medium : constant String  := "14px";
+   Font_Height_Big    : constant String  := "16px";
+   Font_Size_Small    : constant Natural := 12;
+   Font_Size_Medium   : constant Natural := 14;
+   Font_Size_Big      : constant Natural := 16;
+
+   -----------------
+   -- Get_Context --
+   -----------------
+
+   procedure Get_Context
+     (Context : in out Context_2D_Type; P : in out Canvas_Type)
+   is
+   begin
+      pragma Inline (Get_Context);
+      if Current_Canvas = Draw then
+         Context.Get_Drawing_Context_2D (P.Draw);
+      else
+         Context.Get_Drawing_Context_2D (P.Info);
+      end if;
+   end Get_Context;
 
    --------------
    -- Screen_X --
@@ -150,6 +170,9 @@ package body Project_Euler.GUI_Plotter.Canvas is
 
    overriding procedure Start (P : in out Canvas_Type) is
    begin
+      Current_Canvas := Info;
+      P.Clear_Plot;
+      Current_Canvas := Draw;
       P.Clear_Plot;
    end Start;
 
@@ -178,11 +201,29 @@ package body Project_Euler.GUI_Plotter.Canvas is
    overriding procedure Clear_Plot (P : in out Canvas_Type) is
       Context : Context_2D_Type;
    begin
-      Context.Get_Drawing_Context_2D (P.Draw);
+      Get_Context (Context, P);
 
       Context.Begin_Path;
       Context.Clear_Rectangle ([0, 0, P.Draw.Width, P.Draw.Height]);
    end Clear_Plot;
+
+   ----------------------
+   -- Set_Layer_Normal --
+   ----------------------
+
+   overriding procedure Set_Layer_Normal (P : in out Canvas_Type) is
+   begin
+      Current_Canvas := Draw;
+   end Set_Layer_Normal;
+
+   --------------------
+   -- Set_Layer_Info --
+   --------------------
+
+   overriding procedure Set_Layer_Info (P : in out Canvas_Type) is
+   begin
+      Current_Canvas := Info;
+   end Set_Layer_Info;
 
    --------------
    -- Set_Axes --
@@ -458,7 +499,7 @@ package body Project_Euler.GUI_Plotter.Canvas is
       Context.Move_To (Sx (P, 0.0), Sy (P, P.Y.Min));
       Context.Line_To (Sx (P, 0.0), Sy (P, P.Y.Max));
 
-      Context.Font (UXS (Font_Family_Axis), UXS (Font_Height_Medium));
+      Context.Font (UXS (Font_Family_Axis), UXS (Font_Height_Big));
       Context.Fill_Color ("#000");
 
       Context.Text_Alignment (Left);
@@ -467,7 +508,7 @@ package body Project_Euler.GUI_Plotter.Canvas is
       Context.Fill_Text
         (UXS (X_Label), Sx (P, P.X.Max) - Length / 2,
          Sy (P, 0.0) + 2 +
-         (if P.X.Has_Ticks then Font_Size_Medium * 2 else Font_Size_Medium),
+         (if P.X.Has_Ticks then Font_Size_Big * 2 else Font_Size_Big),
          Length);
 
       Context.Text_Alignment (Center);
@@ -476,8 +517,7 @@ package body Project_Euler.GUI_Plotter.Canvas is
       Context.Fill_Text
         (UXS (Y_Label), Sx (P, 0.0) - Length / 2,
          Sy (P, P.Y.Max) -
-         (if P.Y.Has_Ticks then Font_Size_Medium * 2
-          else Font_Size_Medium / 2),
+         (if P.Y.Has_Ticks then Font_Size_Big * 2 else Font_Size_Big),
          Length);
 
       Context.Stroke;
@@ -531,20 +571,64 @@ package body Project_Euler.GUI_Plotter.Canvas is
       Context.Stroke;
    end Plot;
 
+   ----------------
+   -- Line_Width --
+   ----------------
+
+   overriding procedure Line_Width (P : in out Canvas_Type; Width : Natural) is
+      Context : Context_2D_Type;
+   begin
+      Get_Context (Context, P);
+      Context.Line_Width (Width);
+   end Line_Width;
+
+   ---------------
+   -- Line_Dash --
+   ---------------
+
+   overriding procedure Line_Dash
+     (P : in out Canvas_Type; Length : Natural; Gap : Natural)
+   is
+      Context : Context_2D_Type;
+   begin
+      Get_Context (Context, P);
+      Context.Set_Line_Dash ([Length, Gap]);
+   end Line_Dash;
+
+   ------------------
+   -- Stroke_Color --
+   ------------------
+
+   overriding procedure Stroke_Color (P : in out Canvas_Type; Color : String)
+   is
+      Context : Context_2D_Type;
+   begin
+      Get_Context (Context, P);
+      Context.Stroke_Color (UXS (Color));
+   end Stroke_Color;
+
+   ----------------
+   -- Fill_Color --
+   ----------------
+
+   overriding procedure Fill_Color (P : in out Canvas_Type; Color : String) is
+      Context : Context_2D_Type;
+   begin
+      Get_Context (Context, P);
+      Context.Fill_Color (UXS (Color));
+   end Fill_Color;
+
    ----------
    -- Line --
    ----------
 
-   overriding procedure Line
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float; color : String)
+   overriding procedure Line (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
    begin
-      Context.Get_Drawing_Context_2D (P.Draw);
+      Get_Context (Context, P);
 
       Context.Begin_Path;
-      Context.Stroke_Color (UXS (color));
-      Context.Line_Width (1);
       Context.Move_To (Sx (P, X0), Sy (P, Y0));
       Context.Line_To (Sx (P, X1), Sy (P, Y1));
       Context.Stroke;
@@ -555,7 +639,7 @@ package body Project_Euler.GUI_Plotter.Canvas is
    ---------------
 
    overriding procedure Rectangle
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float; color : String)
+     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
       X       : constant Natural := Natural'Min (Sx (P, X0), Sx (P, X1));
@@ -563,14 +647,32 @@ package body Project_Euler.GUI_Plotter.Canvas is
       Width   : constant Natural := Natural (abs (Sx (P, X1) - Sx (P, X0)));
       Height  : constant Natural := Natural (abs (Sy (P, Y1) - Sy (P, Y0)));
    begin
-      Context.Get_Drawing_Context_2D (P.Draw);
+      Get_Context (Context, P);
 
       Context.Begin_Path;
-      Context.Stroke_Color (UXS (color));
-      Context.Line_Width (1);
       Context.Rectangle (Rectangle => [X, Y, Width, Height]);
       Context.Stroke;
    end Rectangle;
+
+   --------------------
+   -- Fill_Rectangle --
+   --------------------
+
+   overriding procedure Fill_Rectangle
+     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
+   is
+      Context : Context_2D_Type;
+      X       : constant Natural := Natural'Min (Sx (P, X0), Sx (P, X1));
+      Y       : constant Natural := Natural'Min (Sy (P, Y0), Sy (P, Y1));
+      Width   : constant Natural := Natural (abs (Sx (P, X1) - Sx (P, X0)));
+      Height  : constant Natural := Natural (abs (Sy (P, Y1) - Sy (P, Y0)));
+   begin
+      Get_Context (Context, P);
+
+      Context.Begin_Path;
+      Context.Rectangle (Rectangle => [X, Y, Width, Height]);
+      Context.Fill;
+   end Fill_Rectangle;
 
    ---------
    -- Arc --
@@ -582,7 +684,7 @@ package body Project_Euler.GUI_Plotter.Canvas is
    is
       Context : Context_2D_Type;
    begin
-      Context.Get_Drawing_Context_2D (P.Draw);
+      Get_Context (Context, P);
 
       Context.Begin_Path;
       Context.Stroke_Color (UXS (Color));
@@ -593,5 +695,51 @@ package body Project_Euler.GUI_Plotter.Canvas is
          360.0 - Start_Angle, 360.0 - End_Angle);
       Context.Stroke;
    end Arc;
+
+   ----------
+   -- Font --
+   ----------
+
+   overriding procedure Font
+     (P : in out Canvas_Type; Font : String; Height : String)
+   is
+      Context : Context_2D_Type;
+   begin
+      Get_Context (Context, P);
+      Context.Font (UXS (Font), UXS (Height));
+   end Font;
+
+   ----------------
+   -- Text_Align --
+   ----------------
+
+   overriding procedure Text_Align (P : in out Canvas_Type; Align : String) is
+   begin
+      null;
+   end Text_Align;
+
+   -------------------
+   -- Text_Baseline --
+   -------------------
+
+   overriding procedure Text_Baseline
+     (P : in out Canvas_Type; Baseline : String)
+   is
+   begin
+      null;
+   end Text_Baseline;
+
+   ----------
+   -- Text --
+   ----------
+
+   overriding procedure Text
+     (P : in out Canvas_Type; X, Y : Float; Text : String)
+   is
+      Context : Context_2D_Type;
+   begin
+      Get_Context (Context, P);
+      Context.Fill_Text (UXS (Text), Sx (P, X), Sy (P, Y));
+   end Text;
 
 end Project_Euler.GUI_Plotter.Canvas;

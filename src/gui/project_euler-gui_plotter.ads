@@ -43,6 +43,14 @@ package Project_Euler.GUI_Plotter is
    procedure Clear_Plot (Plotter : in out Plotter_Type) is abstract;
    --  Cleat the Plot and Info areas; keeps the Axes area intact.
 
+   procedure Set_Layer_Normal (Plotter : in out Plotter_Type) is abstract;
+   --  Switch to the Normal layer (below the Info layer), until
+   --  Set_Layer_Info is called. Normal layer is the default on start.
+
+   procedure Set_Layer_Info (Plotter : in out Plotter_Type) is abstract;
+   --  Switch to the Info layer (on top of the Normal layer), until
+   --  Set_Layer_Normal is called.
+
    procedure Set_Axes
      (Plotter : in out Plotter_Type; Min, Max : Float) is abstract;
    --  Set symmetric mathematical coordinates X and Y; range [Min, Max] is
@@ -75,15 +83,27 @@ package Project_Euler.GUI_Plotter is
       Color   :        String) is abstract;
    --  Plot the given map represented as a point list.
 
+   procedure Line_Width
+     (Plotter : in out Plotter_Type; Width : Natural) is abstract;
+
+   procedure Line_Dash
+     (Plotter : in out Plotter_Type; Length : Natural;
+      Gap     :        Natural) is abstract;
+
+   procedure Stroke_color
+     (Plotter : in out Plotter_Type; Color : String) is abstract;
+
+   procedure Fill_Color
+     (Plotter : in out Plotter_Type; Color : String) is abstract;
+
    procedure Line
-     (Plotter : in out Plotter_Type; X0, Y0, X1, Y1 : Float;
-      color   :        String) is abstract;
-   --  Draw the line between the indicated points.
+     (Plotter : in out Plotter_Type; X0, Y0, X1, Y1 : Float) is abstract;
 
    procedure Rectangle
-     (Plotter : in out Plotter_Type; X0, Y0, X1, Y1 : Float;
-      color   :        String) is abstract;
-   --  Draw a rectangle with corners in the indicated points.
+     (Plotter : in out Plotter_Type; X0, Y0, X1, Y1 : Float) is abstract;
+
+   procedure Fill_Rectangle
+     (Plotter : in out Plotter_Type; X0, Y0, X1, Y1 : Float) is abstract;
 
    procedure Arc
      (Plotter                                : in out Plotter_Type;
@@ -93,5 +113,18 @@ package Project_Euler.GUI_Plotter is
    --  Radius, and starting and ending in the indicated angles. Angles are
    --  measured in degrees as in mathematics: angle 0 is over X axe and
    --  increases counterclockwise.
+
+   procedure Font
+     (Plotter : in out Plotter_Type; Font : String;
+      Height  :        String) is abstract;
+
+   procedure Text_Align
+     (Plotter : in out Plotter_Type; Align : String) is abstract;
+
+   procedure Text_Baseline
+     (Plotter : in out Plotter_Type; Baseline : String) is abstract;
+
+   procedure Text
+     (Plotter : in out Plotter_Type; X, Y : Float; Text : String) is abstract;
 
 end Project_Euler.GUI_Plotter;
