@@ -248,11 +248,13 @@ package body Project_Euler.GUI_Plotter.Canvas is
    overriding procedure Draw_Grid
      (P : in out Canvas_Type; X_Major, X_Minor, Y_Major, Y_Minor : Float)
    is
+      subtype Label_Type is String (1 .. 12);
+
       Context : Context_2D_Type;
       Px, Py  : Float;
       Length  : Natural;
       Count   : Natural;
-      Text    : String (1 .. 8);
+      Label   : Label_Type;
 
       --  #region Internal procedures
       procedure Draw_X (Δx : Float; Is_Major : Boolean) is
@@ -332,6 +334,17 @@ package body Project_Euler.GUI_Plotter.Canvas is
             Context.Line_To (Sx (P, P.X.Max), Sy (P, P.Y.Max));
          end if;
       end Draw_Y;
+
+      procedure Set_Label (Label : in out Label_Type; Value : Float) is
+      begin
+         if Value < 1_000_000.0 then
+            Ada.Float_Text_IO.Put
+              (To => Label, Item => Value, Aft => 0, Exp => 0);
+         else
+            Ada.Float_Text_IO.Put (To => Label, Item => Value, Aft => 3);
+         end if;
+      end Set_Label;
+
       --  #end region
 
    begin
@@ -369,9 +382,10 @@ package body Project_Euler.GUI_Plotter.Canvas is
          Count := 0;
          loop
             exit when Px < P.X.Min;
-            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Px'Image));
+            Set_Label (Label, Px);
+            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS (Px'Image), Sx (P, Px) - Length / 2,
+              (UXS (Label), Sx (P, Px) - Length / 2,
                Sy (P, 0.0) + Font_Size_Small + 2, Length);
             Px := @ - X_Major;
          end loop;
@@ -380,9 +394,10 @@ package body Project_Euler.GUI_Plotter.Canvas is
          Count := 0;
          loop
             exit when Px > P.X.Max;
-            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Px'Image));
+            Set_Label (Label, Px);
+            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS (Px'Image), Sx (P, Px) - Length / 2,
+              (UXS (Label), Sx (P, Px) - Length / 2,
                Sy (P, 0.0) + Font_Size_Small + 2, Length);
             Px := @ + X_Major;
          end loop;
@@ -395,12 +410,10 @@ package body Project_Euler.GUI_Plotter.Canvas is
          Count := 0;
          loop
             exit when Py < P.Y.Min;
-            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Py'Image));
-            Ada.Float_Text_IO.Default_Fore := 6;
-            Ada.Float_Text_IO.Put
-              (To => Text, Item => Py / 100.0, Aft => 1, Exp => 1);
+            Set_Label (Label, Py);
+            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS ("Text"), Sx (P, 0.0) - Length - 3, Sy (P, Py) - 2, Length);
+              (UXS (Label), Sx (P, 0.0) - Length - 3, Sy (P, Py) - 2, Length);
             Py := @ - Y_Major;
          end loop;
 
@@ -408,14 +421,16 @@ package body Project_Euler.GUI_Plotter.Canvas is
          Count := 0;
          loop
             exit when Py > P.Y.Max;
-            --  Ada.Float_Text_IO.Default_Fore := 6;
-            Ada.Float_Text_IO.Default_Fore := 6;
-            Ada.Float_Text_IO.Default_Aft  := 0;
-            Ada.Float_Text_IO.Default_Exp  := 0;
-            Ada.Float_Text_IO.Put (To => Text, Item => Py, Aft => 0, Exp => 0);
-            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Text));
+            if Count < 1_000_000 then
+               Ada.Float_Text_IO.Put (To => Label, Item => Py);
+            else
+               Ada.Float_Text_IO.Put
+                 (To => Label, Item => Py, Aft => 0, Exp => 0);
+            end if;
+            Set_Label (Label, Py);
+            Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS (Text), Sx (P, 0.0) - Length - 3, Sy (P, Py) - 2, Length);
+              (UXS (Label), Sx (P, 0.0) - Length - 3, Sy (P, Py) - 2, Length);
             Py := @ + Y_Major;
          end loop;
       end if;
