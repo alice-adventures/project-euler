@@ -4,9 +4,9 @@
    "version": "2.0.0",
    "tasks": [
       {
-         "label": "Alice (PE): Build all",
+         "label": "Alice/PE: Build Alice/Project Euler",
          "type": "shell",
-         "command": "alr exec -- gprbuild -v -s -j0 -p -P ${config:ada.projectFile}",
+         "command": "alr build --development",
          "group": {
             "kind": "build",
             "isDefault": true
