@@ -6,6 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
+with Ada.Strings;
+
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element;
@@ -24,7 +26,7 @@ use all type Gnoga.String;
 package body Project_Euler.GUI_Runner_Gnoga is
 
    Window_Layout : constant Gnoga.Gui.View.Grid.Grid_Rows_Type :=
-     [[COL, COL, COL], [COL, COL, SPN], [COL, COL, SPN]];
+     [1 => [COL, COL, COL], 2 => [COL, COL, COL], 3 => [COL, COL, COL]];
 
    type Button_Bar_Type is record
       Panel    : Gnoga.Gui.View.Pointer_To_View_Base_Class;
@@ -36,9 +38,10 @@ package body Project_Euler.GUI_Runner_Gnoga is
 
    type App_Data_Type is new Gnoga.Types.Connection_Data_Type with record
       Grid         : Gnoga.Gui.View.Grid.Grid_View_Type;
-      Panel_Margin : Gnoga.Gui.View.Pointer_To_View_Base_Class;
+      Panel_Alice  : Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Panel_Title  : Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Button_Bar   : Button_Bar_Type;
+      Panel_Answer : Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Plotter      : aliased Canvas_Type;
       Problem      : Pointer_To_GUI_Class := null;
    end record;
@@ -63,6 +66,13 @@ package body Project_Euler.GUI_Runner_Gnoga is
    function UXS
      (Item : UXStrings.ASCII_Character_Array) return UXStrings.UXString renames
      UXStrings.From_ASCII;
+
+   ---------
+   -- UXS --
+   ---------
+
+   function UXS (Value : Natural) return UXStrings.UXString is
+     (UXStrings.Trim (UXS (Value'Image), Ada.Strings.Both));
 
    ---------------------------
    -- Button_Start_On_Click --
@@ -164,26 +174,26 @@ package body Project_Euler.GUI_Runner_Gnoga is
       App.Grid.Create
         (Parent => Main_Window, Layout => Window_Layout, Fill_Parent => True,
          Set_Sizes => False, ID => "app_grid");
+      App.Grid.Style ("position", "relative");
 
-      App.Panel_Margin := App.Grid.Panel (1, 1);
-      App.Panel_Margin.Padding ("10px", "10px", "10px", "10px");
-      App.Panel_Margin.Class_Name ("third-cell");
-      App.Panel_Margin.Attribute ("rowspan", "3");
+      App.Panel_Alice := App.Grid.Panel (1, 1);
+      App.Panel_Alice.Class_Name ("alice top-row");
 
       App.Panel_Title := App.Grid.Panel (1, 2);
-      App.Panel_Title.Class_Name ("half-cell");
-      App.Panel_Title.Padding ("10px", "10px", "10px", "10px");
-      App.Panel_Title.Height (50);
+      App.Panel_Title.Class_Name ("title top-row");
       App.Panel_Title.Put_HTML
         (UXS ("<h2>Problem " & App.Problem.Number'Image & "</h2>"));
       App.Panel_Title.Put_HTML (UXS ("<h1>" & App.Problem.Title & "</h1>"));
       App.Panel_Title.Put_HTML
-        (UXS ("<p class='fs-4'>" & App.Problem.Brief & "</p>"));
+        (UXS ("<p class=""fs-4"">" & App.Problem.Brief & "</p>"));
+      App.Panel_Title.Put_HTML
+        (UXS
+           ("<i class=""fs-5"">See <a target=""_new"" href=""https://projecteuler.net/problem=") &
+         UXS (App.Problem.Number) & UXS (""">complete description.</a></i>"));
       App.Panel_Title.Horizontal_Rule;
 
-      App.Button_Bar.Panel := App.Grid.Panel (3, 1);
+      App.Button_Bar.Panel := App.Grid.Panel (2, 1);
       App.Button_Bar.Panel.Class_Name ("button_bar");
-      App.Button_Bar.Panel.Height (100);
 
       App.Button_Bar.Start.Create
         (App.Button_Bar.Panel.all, "&nbsp;Start&nbsp;", "button_start");
@@ -191,6 +201,7 @@ package body Project_Euler.GUI_Runner_Gnoga is
       App.Button_Bar.Start.Access_Key ("s");
       App.Button_Bar.Start.On_Click_Handler
         (Button_Start_On_Click'Unrestricted_Access);
+      App.Button_Bar.Panel.Put_HTML (UXS ("<br>"));
 
       App.Button_Bar.Step.Create
         (App.Button_Bar.Panel.all, "&nbsp;Step&nbsp;", "button_step");
@@ -199,6 +210,7 @@ package body Project_Euler.GUI_Runner_Gnoga is
       App.Button_Bar.Step.Disabled;
       App.Button_Bar.Step.On_Click_Handler
         (Button_Step_On_Click'Unrestricted_Access);
+      App.Button_Bar.Panel.Put_HTML (UXS ("<br>"));
 
       App.Button_Bar.Continue.Create
         (App.Button_Bar.Panel.all, "&nbsp;Continue&nbsp;", "button_continue");
@@ -207,6 +219,7 @@ package body Project_Euler.GUI_Runner_Gnoga is
       App.Button_Bar.Continue.Disabled;
       App.Button_Bar.Continue.On_Click_Handler
         (Button_Continue_On_Click'Unrestricted_Access);
+      App.Button_Bar.Panel.Put_HTML (UXS ("<br>"));
 
       App.Button_Bar.Stop.Create
         (App.Button_Bar.Panel.all, "&nbsp;Stop&nbsp;", "button_stop");
@@ -216,12 +229,12 @@ package body Project_Euler.GUI_Runner_Gnoga is
       App.Button_Bar.Stop.On_Click_Handler
         (Button_Stop_On_Click'Unrestricted_Access);
 
-      App.Grid.Panel (2, 1).Padding ("10px", "10px", "10px", "10px");
-      App.Grid.Panel (2, 1).Margin ("10px", "10px", "10px", "10px");
-      App.Grid.Style ("position", "relative");
+      App.Panel_Answer := App.Grid.Panel (3, 2);
+      App.Panel_Answer.Class_Name ("answer");
+      App.Panel_Answer.Put_HTML (UXS ("<h3>Answer:<h3>"));
 
       App.Plotter.Create
-        (App.Grid.Panel (2, 1), Pause_Callback'Access, Stop_Callback'Access,
+        (App.Grid.Panel (2, 2), Pause_Callback'Access, Stop_Callback'Access,
          Main_Window.Connection_Data);
       App.Problem.Plotter_Setup (App.Plotter'Access);
    end On_App_Connect;
