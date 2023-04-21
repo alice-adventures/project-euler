@@ -14,14 +14,14 @@ with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Window;
 with UXStrings;
 
+use all type Gnoga.Gui.View.Grid.Grid_Element_Type;
+
 with Project_Euler.GUI;                use Project_Euler.GUI;
 with Project_Euler.GUI_Plotter.Canvas; use Project_Euler.GUI_Plotter.Canvas;
 
 use all type Gnoga.String;
 
 package body Project_Euler.GUI_Runner_Gnoga is
-   COL : Gnoga.Gui.View.Grid.Grid_Element_Type renames Gnoga.Gui.View.Grid.COL;
-   SPN : Gnoga.Gui.View.Grid.Grid_Element_Type renames Gnoga.Gui.View.Grid.SPN;
 
    Window_Layout : constant Gnoga.Gui.View.Grid.Grid_Rows_Type :=
      [[COL, COL, COL], [COL, COL, SPN], [COL, COL, SPN]];
