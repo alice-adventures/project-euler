@@ -6,4 +6,3 @@
 /share/
 /tmp/
 /usr/**/
-^/usr/.keep
