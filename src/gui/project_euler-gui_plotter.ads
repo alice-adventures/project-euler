@@ -14,10 +14,6 @@ package Project_Euler.GUI_Plotter is
       X, Y : Float;
    end record;
 
-   type Device_Point is record
-      X, Y : Natural;
-   end record;
-
    overriding function "=" (A, B : Math_Point) return Boolean is
      (A.X = B.X and then A.Y = B.Y);
 
