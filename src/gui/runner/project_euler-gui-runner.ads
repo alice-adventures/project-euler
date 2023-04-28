@@ -10,10 +10,11 @@ with Project_Euler.GUI.Factory; use Project_Euler.GUI.Factory;
 
 package Project_Euler.GUI.Runner is
 
-   type Runner_Type is interface;
+   type GUI_Runner_Type is interface;
 
    procedure Run
-     (Runner : Runner_Type; Factory : Pointer_To_Factory_Function) is abstract;
+     (Runner  : GUI_Runner_Type;
+      Factory : Pointer_To_Factory_Function) is abstract;
    --  Main entry point of a program that interacts with a Problem that
    --  implements the GUI.
 

@@ -13,7 +13,7 @@ with Gnoga.Types;
 
 package Project_Euler.GUI.Runner.Gnoga_Impl is
 
-   type Gnoga_Runner_Type is new Runner_Type with null record;
+   type Gnoga_Runner_Type is new GUI_Runner_Type with null record;
 
    type Runner_Callback is
      access procedure
