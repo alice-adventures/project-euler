@@ -18,12 +18,12 @@ with UXStrings;
 
 use all type Gnoga.Gui.View.Grid.Grid_Element_Type;
 
-with Project_Euler.GUI;                use Project_Euler.GUI;
-with Project_Euler.GUI_Plotter.Canvas; use Project_Euler.GUI_Plotter.Canvas;
+with Project_Euler.GUI.Problem;        use Project_Euler.GUI.Problem;
+with Project_Euler.GUI.Plotter.Canvas; use Project_Euler.GUI.Plotter.Canvas;
 
 use all type Gnoga.String;
 
-package body Project_Euler.GUI_Runner_Gnoga is
+package body Project_Euler.GUI.Runner.Gnoga_Impl is
 
    Window_Layout : constant Gnoga.Gui.View.Grid.Grid_Rows_Type :=
      [1 => [COL, COL, COL], 2 => [COL, COL, COL], 3 => [COL, COL, COL]];
@@ -43,7 +43,7 @@ package body Project_Euler.GUI_Runner_Gnoga is
       Button_Bar   : Button_Bar_Type;
       Panel_Answer : Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Plotter      : aliased Canvas_Type;
-      Problem      : Pointer_To_GUI_Class := null;
+      Problem      : Pointer_To_GUI_Problem_Class := null;
    end record;
    type App_Access is access all App_Data_Type;
 
@@ -56,7 +56,7 @@ package body Project_Euler.GUI_Runner_Gnoga is
    procedure Button_Stop_On_Click
      (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   Problem_Factory : Project_Euler.GUI_Factory.Pointer_To_Factory_Function :=
+   Problem_Factory : Project_Euler.GUI.Factory.Pointer_To_Factory_Function :=
      null;
 
    ---------
@@ -168,7 +168,7 @@ package body Project_Euler.GUI_Runner_Gnoga is
    begin
 
       Main_Window.Connection_Data (App);
-      App.Problem := Project_Euler.GUI_Runner_Gnoga.Problem_Factory.all;
+      App.Problem := Project_Euler.GUI.Runner.Gnoga_Impl.Problem_Factory.all;
       Gnoga.Application.Title (UXS (App.Problem.Title));
 
       App.Grid.Create
@@ -245,10 +245,10 @@ package body Project_Euler.GUI_Runner_Gnoga is
 
    overriding procedure Run
      (Runner  : Gnoga_Runner_Type;
-      Factory : Project_Euler.GUI_Factory.Pointer_To_Factory_Function)
+      Factory : Project_Euler.GUI.Factory.Pointer_To_Factory_Function)
    is
    begin
-      Project_Euler.GUI_Runner_Gnoga.Problem_Factory := Factory;
+      Project_Euler.GUI.Runner.Gnoga_Impl.Problem_Factory := Factory;
 
       Gnoga.Application.HTML_On_Close
         ("<h3 style='margin:50px;'>Application closed.<h3>");
@@ -259,4 +259,4 @@ package body Project_Euler.GUI_Runner_Gnoga is
       Gnoga.Application.Multi_Connect.Message_Loop;
    end Run;
 
-end Project_Euler.GUI_Runner_Gnoga;
+end Project_Euler.GUI.Runner.Gnoga_Impl;

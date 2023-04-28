@@ -6,12 +6,12 @@
 --
 -------------------------------------------------------------------------------
 
-with Project_Euler.GUI_Runner;  use Project_Euler.GUI_Runner;
-with Project_Euler.GUI_Factory; use Project_Euler.GUI_Factory;
+with Project_Euler.GUI.Runner;  use Project_Euler.GUI.Runner;
+with Project_Euler.GUI.Factory; use Project_Euler.GUI.Factory;
 
 with Gnoga.Types;
 
-package Project_Euler.GUI_Runner_Gnoga is
+package Project_Euler.GUI.Runner.Gnoga_Impl is
 
    type Gnoga_Runner_Type is new Runner_Type with null record;
 
@@ -22,4 +22,4 @@ package Project_Euler.GUI_Runner_Gnoga is
    overriding procedure Run
      (Runner : Gnoga_Runner_Type; Factory : Pointer_To_Factory_Function);
 
-end Project_Euler.GUI_Runner_Gnoga;
+end Project_Euler.GUI.Runner.Gnoga_Impl;

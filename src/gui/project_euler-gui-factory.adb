@@ -6,9 +6,9 @@
 --
 -------------------------------------------------------------------------------
 
-package body Project_Euler.GUI_Factory is
+package body Project_Euler.GUI.Factory is
 
-   function Problem_Factory return Pointer_To_GUI_Class is
-     (new GUI_Problem_Type);
+   function Problem_Factory return Pointer_To_GUI_Problem_Class is
+     (new Problem_Instance);
 
-end Project_Euler.GUI_Factory;
+end Project_Euler.GUI.Factory;

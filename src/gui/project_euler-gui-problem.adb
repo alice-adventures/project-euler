@@ -6,19 +6,19 @@
 --
 -------------------------------------------------------------------------------
 
-package body Project_Euler.GUI is
+package body Project_Euler.GUI.Problem is
 
-   function Is_Started (Problem : GUI_Type) return Boolean is
+   function Is_Started (Problem : GUI_Problem_Type) return Boolean is
      (Problem.Status /= Stop);
 
-   function Is_Stopped (Problem : GUI_Type) return Boolean is
+   function Is_Stopped (Problem : GUI_Problem_Type) return Boolean is
      (Problem.Status = Stop);
 
    -----------
    -- Start --
    -----------
 
-   procedure Start (Problem : in out GUI_Type) is
+   procedure Start (Problem : in out GUI_Problem_Type) is
    begin
       Problem.Status := Run;
    end Start;
@@ -27,7 +27,7 @@ package body Project_Euler.GUI is
    -- Stop --
    ----------
 
-   procedure Stop (Problem : in out GUI_Type) is
+   procedure Stop (Problem : in out GUI_Problem_Type) is
    begin
       Problem.Status := Stop;
    end Stop;
@@ -36,7 +36,7 @@ package body Project_Euler.GUI is
    -- Pause --
    -----------
 
-   procedure Pause (Problem : in out GUI_Type) is
+   procedure Pause (Problem : in out GUI_Problem_Type) is
    begin
       Problem.Status := Pause;
    end Pause;
@@ -45,7 +45,7 @@ package body Project_Euler.GUI is
    -- Wait_To_Run --
    -----------------
 
-   procedure Wait_To_Continue (Problem : in out GUI_Type) is
+   procedure Wait_To_Continue (Problem : in out GUI_Problem_Type) is
    begin
       while Problem.Status = Pause loop
          delay (0.1);
@@ -59,9 +59,9 @@ package body Project_Euler.GUI is
    -- On_Continue --
    -----------------
 
-   procedure On_Continue (Problem : in out GUI_Type) is
+   procedure On_Continue (Problem : in out GUI_Problem_Type) is
    begin
       Problem.Status := Run;
    end On_Continue;
 
-end Project_Euler.GUI;
+end Project_Euler.GUI.Problem;

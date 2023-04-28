@@ -6,9 +6,9 @@
 --
 -------------------------------------------------------------------------------
 
-with Project_Euler.GUI_Factory; use Project_Euler.GUI_Factory;
+with Project_Euler.GUI.Factory; use Project_Euler.GUI.Factory;
 
-package Project_Euler.GUI_Runner is
+package Project_Euler.GUI.Runner is
 
    type Runner_Type is interface;
 
@@ -17,4 +17,4 @@ package Project_Euler.GUI_Runner is
    --  Main entry point of a program that interacts with a Problem that
    --  implements the GUI.
 
-end Project_Euler.GUI_Runner;
+end Project_Euler.GUI.Runner;

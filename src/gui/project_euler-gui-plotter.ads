@@ -8,7 +8,7 @@
 
 with Ada.Containers.Doubly_Linked_Lists; use Ada.Containers;
 
-package Project_Euler.GUI_Plotter is
+package Project_Euler.GUI.Plotter is
 
    type Math_Point is record
       X, Y : Float;
@@ -123,4 +123,4 @@ package Project_Euler.GUI_Plotter is
    procedure Text
      (Plotter : in out Plotter_Type; X, Y : Float; Text : String) is abstract;
 
-end Project_Euler.GUI_Plotter;
+end Project_Euler.GUI.Plotter;

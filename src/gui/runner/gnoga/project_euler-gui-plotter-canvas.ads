@@ -10,9 +10,10 @@ with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.View;
 with Gnoga.Types;
 
-with Project_Euler.GUI_Runner_Gnoga; use Project_Euler.GUI_Runner_Gnoga;
+with Project_Euler.GUI.Runner.Gnoga_Impl;
+use Project_Euler.GUI.Runner.Gnoga_Impl;
 
-package Project_Euler.GUI_Plotter.Canvas is
+package Project_Euler.GUI.Plotter.Canvas is
 
    type Canvas_Type is limited new Plotter_Type with private;
 
@@ -108,4 +109,4 @@ private
       X, Y           : Axis_Type;
    end record;
 
-end Project_Euler.GUI_Plotter.Canvas;
+end Project_Euler.GUI.Plotter.Canvas;
