@@ -6,9 +6,11 @@
 --
 -------------------------------------------------------------------------------
 
+with Project_Euler.CLI.Problem; use Project_Euler.CLI.Problem;
+
 package Project_Euler.CLI.Runner is
 
-   procedure Run (Problem : in out CLI_Type'Class);
+   procedure Run (Problem : in out CLI_Problem_Type'Class);
    --  Runs the given Problem.
 
 end Project_Euler.CLI.Runner;

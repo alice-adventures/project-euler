@@ -6,7 +6,8 @@
 --
 -------------------------------------------------------------------------------
 
-with Text_IO; use Text_IO;
+with Text_IO;               use Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with AnsiAda;        use AnsiAda;
 with Parse_Args;     use Parse_Args;
@@ -42,7 +43,7 @@ package body Project_Euler.CLI.Runner is
       return Text;
    end Fill_Paragraph;
 
-   procedure Run (Problem : in out CLI_Type'Class) is
+   procedure Run (Problem : in out CLI_Problem_Type'Class) is
       Parser : Parse_Args.Argument_Parser;
    begin
       pragma Warnings (Off);

@@ -6,14 +6,14 @@
 --
 -------------------------------------------------------------------------------
 
-with Project_Euler.CLI;         use Project_Euler.CLI;
+with Project_Euler.CLI.Problem; use Project_Euler.CLI.Problem;
 with Project_Euler.GUI_Plotter; use Project_Euler.GUI_Plotter;
 
 package Project_Euler.GUI is
 
    type Status_Type is tagged null record;
 
-   type GUI_Type is abstract new Status_Type and CLI_Type with private;
+   type GUI_Type is abstract new Status_Type and CLI_Problem_Type with private;
    type Pointer_To_GUI_Class is access all GUI_Type'Class;
 
    --  -----------------------------------------------
@@ -71,7 +71,7 @@ private
 
    type Status_Value is (Stop, Run, Step, Pause);
 
-   type GUI_Type is abstract new Status_Type and CLI_Type with record
+   type GUI_Type is abstract new Status_Type and CLI_Problem_Type with record
       Status : Status_Value := Stop;
       pragma Atomic (Status);
    end record;
