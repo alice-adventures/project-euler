@@ -31,7 +31,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    type Button_Bar_Type is record
       Panel    : Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Start    : Gnoga.Gui.Element.Common.Button_Type;
-      Step     : Gnoga.Gui.Element.Common.Button_Type;
+      --  Step     : Gnoga.Gui.Element.Common.Button_Type;
       Continue : Gnoga.Gui.Element.Common.Button_Type;
       Stop     : Gnoga.Gui.Element.Common.Button_Type;
    end record;
@@ -49,8 +49,8 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
 
    procedure Button_Start_On_Click
      (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-   procedure Button_Step_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   --  procedure Button_Step_On_Click
+   --    (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Button_Continue_On_Click
      (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Button_Stop_On_Click
@@ -86,11 +86,11 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    begin
       App.Button_Bar.Start.Class_Name ("btn btn-outline-primary");
       App.Button_Bar.Start.Disabled (True);
-      App.Button_Bar.Step.Class_Name ("btn btn-info");
-      App.Button_Bar.Step.Disabled (False);
+      --  App.Button_Bar.Step.Class_Name ("btn btn-info");
+      --  App.Button_Bar.Step.Disabled (False);
       App.Button_Bar.Stop.Class_Name ("btn btn-danger");
       App.Button_Bar.Stop.Disabled (False);
-      App.Problem.Start (App.Plotter'Access);
+      App.Problem.Start;
    end Button_Start_On_Click;
 
    --------------------------
@@ -102,17 +102,17 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    is
       App : constant App_Access := App_Access (App_Data);
    begin
-      App.Problem.Step;
+      --  App.Problem.Step;
       App.Button_Bar.Continue.Class_Name ("btn btn-light");
       App.Button_Bar.Continue.Disabled (False);
    end Pause_Callback;
 
-   procedure Button_Step_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
-   begin
-      Pause_Callback (Object.Connection_Data);
-   end Button_Step_On_Click;
+   --  procedure Button_Step_On_Click
+   --    (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   --  is
+   --  begin
+   --     Pause_Callback (Object.Connection_Data);
+   --  end Button_Step_On_Click;
 
    ------------------------------
    -- Button_Continue_On_Click --
@@ -137,11 +137,10 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    is
       App : constant App_Access := App_Access (App_Data);
    begin
-      App.Problem.Stop;
       App.Button_Bar.Start.Class_Name ("btn btn-primary");
       App.Button_Bar.Start.Disabled (False);
-      App.Button_Bar.Step.Class_Name ("btn btn-outline-info");
-      App.Button_Bar.Step.Disabled;
+      --  App.Button_Bar.Step.Class_Name ("btn btn-outline-info");
+      --  App.Button_Bar.Step.Disabled;
       App.Button_Bar.Continue.Class_Name ("btn btn-outline-light");
       App.Button_Bar.Continue.Disabled;
       App.Button_Bar.Stop.Class_Name ("btn btn-outline-danger");
@@ -151,7 +150,9 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    procedure Button_Stop_On_Click
      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
+      App : constant App_Access := App_Access (Object.Connection_Data);
    begin
+      App.Problem.Stop;
       Stop_Callback (Object.Connection_Data);
    end Button_Stop_On_Click;
 
@@ -204,14 +205,14 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
         (Button_Start_On_Click'Unrestricted_Access);
       App.Button_Bar.Panel.Put_HTML (UXS ("<br>"));
 
-      App.Button_Bar.Step.Create
-        (App.Button_Bar.Panel.all, "&nbsp;Step&nbsp;", "button_step");
-      App.Button_Bar.Step.Class_Name ("btn btn-outline-info");
-      App.Button_Bar.Step.Access_Key ("t");
-      App.Button_Bar.Step.Disabled;
-      App.Button_Bar.Step.On_Click_Handler
-        (Button_Step_On_Click'Unrestricted_Access);
-      App.Button_Bar.Panel.Put_HTML (UXS ("<br>"));
+      --  App.Button_Bar.Step.Create
+      --    (App.Button_Bar.Panel.all, "&nbsp;Step&nbsp;", "button_step");
+      --  App.Button_Bar.Step.Class_Name ("btn btn-outline-info");
+      --  App.Button_Bar.Step.Access_Key ("t");
+      --  App.Button_Bar.Step.Disabled;
+      --  App.Button_Bar.Step.On_Click_Handler
+      --    (Button_Step_On_Click'Unrestricted_Access);
+      --  App.Button_Bar.Panel.Put_HTML (UXS ("<br>"));
 
       App.Button_Bar.Continue.Create
         (App.Button_Bar.Panel.all, "&nbsp;Continue&nbsp;", "button_continue");
@@ -237,7 +238,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Plotter.Create
         (App.Grid.Panel (2, 2), Pause_Callback'Access, Stop_Callback'Access,
          Main_Window.Connection_Data);
-      --  App.Problem.Plotter_Setup;-- (App.Plotter'Access);
+      App.Problem.Initialize (App.Plotter'Access);
    end On_App_Connect;
 
    ----------
