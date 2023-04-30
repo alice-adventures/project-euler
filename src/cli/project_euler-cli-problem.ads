@@ -12,7 +12,7 @@ with Parse_Args;
 
 package Project_Euler.CLI.Problem is
 
-   type CLI_Problem_Type is interface;
+   type CLI_Problem_Type is limited interface;
 
    function Number (Problem : CLI_Problem_Type) return Natural is abstract;
    --  Return the number of the PRoject Euler problem begin solved.
@@ -24,13 +24,13 @@ package Project_Euler.CLI.Problem is
    --  Return a brief description of the problem, usually the last sentence
    --  os the description found in Project Euler web site.
 
-   procedure Initialize
+   procedure Configure_Options
      (Problem :        CLI_Problem_Type;
       Parser  : in out Parse_Args.Argument_Parser) is null;
    --  This procedure allow objects setting global/private stuff and adding
    --  options.
 
-   procedure Set_Options
+   procedure Parse_Options
      (Problem : in out CLI_Problem_Type;
       Parser  :        Parse_Args.Argument_Parser) is null;
 

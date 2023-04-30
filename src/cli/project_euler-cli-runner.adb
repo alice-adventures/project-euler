@@ -69,7 +69,7 @@ package body Project_Euler.CLI.Runner is
       Parser.Add_Option
         (Make_Boolean_Option (False), "help", 'h', "help",
          "Display this text");
-      Problem.Initialize (Parser);
+      Problem.Configure_Options (Parser);
 
       Parser.Parse_Command_Line;
       if Parser.Parse_Success then
@@ -77,7 +77,7 @@ package body Project_Euler.CLI.Runner is
             Parser.Usage;
             return;
          else
-            Set_Options (Problem, Parser);
+            Parse_Options (Problem, Parser);
          end if;
       else
          Put_Line

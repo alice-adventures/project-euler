@@ -6,7 +6,7 @@
 --
 -------------------------------------------------------------------------------
 
-with Project_Euler.GUI.Factory; use Project_Euler.GUI.Factory;
+with Project_Euler.GUI.Problem; use Project_Euler.GUI.Problem;
 
 package Project_Euler.GUI.Runner is
 
@@ -14,7 +14,7 @@ package Project_Euler.GUI.Runner is
 
    procedure Run
      (Runner  : GUI_Runner_Type;
-      Factory : Pointer_To_Factory_Function) is abstract;
+      Factory : Pointer_To_Problem_Factory_Function) is abstract;
    --  Main entry point of a program that interacts with a Problem that
    --  implements the GUI.
 

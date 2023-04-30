@@ -7,7 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Project_Euler.GUI.Runner;  use Project_Euler.GUI.Runner;
-with Project_Euler.GUI.Factory; use Project_Euler.GUI.Factory;
+with Project_Euler.GUI.Problem; use Project_Euler.GUI.Problem;
 
 with Gnoga.Types;
 
@@ -20,6 +20,7 @@ package Project_Euler.GUI.Runner.Gnoga_Impl is
        (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class);
 
    overriding procedure Run
-     (Runner : Gnoga_Runner_Type; Factory : Pointer_To_Factory_Function);
+     (Runner          : Gnoga_Runner_Type;
+      Problem_Factory : Pointer_To_Problem_Factory_Function);
 
 end Project_Euler.GUI.Runner.Gnoga_Impl;

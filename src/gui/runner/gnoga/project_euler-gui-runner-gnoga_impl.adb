@@ -56,7 +56,8 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    procedure Button_Stop_On_Click
      (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   Problem_Factory : Project_Euler.GUI.Factory.Pointer_To_Factory_Function :=
+   Problem_Factory :
+     Project_Euler.GUI.Problem.Pointer_To_Problem_Factory_Function :=
      null;
 
    ---------
@@ -89,7 +90,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Button_Bar.Step.Disabled (False);
       App.Button_Bar.Stop.Class_Name ("btn btn-danger");
       App.Button_Bar.Stop.Disabled (False);
-      App.Problem.On_Start (App.Plotter'Access);
+      App.Problem.Start (App.Plotter'Access);
    end Button_Start_On_Click;
 
    --------------------------
@@ -101,7 +102,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    is
       App : constant App_Access := App_Access (App_Data);
    begin
-      App.Problem.On_Step;
+      App.Problem.Step;
       App.Button_Bar.Continue.Class_Name ("btn btn-light");
       App.Button_Bar.Continue.Disabled (False);
    end Pause_Callback;
@@ -124,7 +125,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    begin
       App.Button_Bar.Continue.Class_Name ("btn btn-outline-light");
       App.Button_Bar.Continue.Disabled;
-      App.Problem.On_Continue;
+      App.Problem.Continue;
    end Button_Continue_On_Click;
 
    --------------------------
@@ -136,7 +137,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    is
       App : constant App_Access := App_Access (App_Data);
    begin
-      App.Problem.On_Stop;
+      App.Problem.Stop;
       App.Button_Bar.Start.Class_Name ("btn btn-primary");
       App.Button_Bar.Start.Disabled (False);
       App.Button_Bar.Step.Class_Name ("btn btn-outline-info");
@@ -236,7 +237,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Plotter.Create
         (App.Grid.Panel (2, 2), Pause_Callback'Access, Stop_Callback'Access,
          Main_Window.Connection_Data);
-      App.Problem.Plotter_Setup (App.Plotter'Access);
+      --  App.Problem.Plotter_Setup;-- (App.Plotter'Access);
    end On_App_Connect;
 
    ----------
@@ -244,11 +245,12 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
    ----------
 
    overriding procedure Run
-     (Runner  : Gnoga_Runner_Type;
-      Factory : Project_Euler.GUI.Factory.Pointer_To_Factory_Function)
+     (Runner          : Gnoga_Runner_Type;
+      Problem_Factory : Project_Euler.GUI.Problem
+        .Pointer_To_Problem_Factory_Function)
    is
    begin
-      Project_Euler.GUI.Runner.Gnoga_Impl.Problem_Factory := Factory;
+      Project_Euler.GUI.Runner.Gnoga_Impl.Problem_Factory := Problem_Factory;
 
       Gnoga.Application.HTML_On_Close
         ("<h3 style='margin:50px;'>Application closed.<h3>");
