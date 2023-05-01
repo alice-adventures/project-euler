@@ -221,7 +221,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Button_Bar.Continue.Disabled;
       App.Button_Bar.Continue.On_Click_Handler
         (Button_Continue_On_Click'Unrestricted_Access);
-      App.Button_Bar.Panel.Put_HTML (UXS ("<br>"));
+      App.Button_Bar.Panel.Put_HTML (UXS ("<br><br>"));
 
       App.Button_Bar.Stop.Create
         (App.Button_Bar.Panel.all, "&nbsp;Stop&nbsp;", "button_stop");
