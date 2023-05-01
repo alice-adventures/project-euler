@@ -15,9 +15,14 @@ package Project_Euler.GUI.Runner.Gnoga_Impl is
 
    type Gnoga_Runner_Type is new GUI_Runner_Type with null record;
 
-   type Runner_Callback is
+   type Runner_Control_Callback is
      access procedure
        (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class);
+
+   type Runner_Answer_Callback is
+     access procedure
+       (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class;
+        Answer   : String);
 
    overriding procedure Run
      (Runner          : Gnoga_Runner_Type;

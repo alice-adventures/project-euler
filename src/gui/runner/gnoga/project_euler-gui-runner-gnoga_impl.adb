@@ -7,6 +7,7 @@
 -------------------------------------------------------------------------------
 
 with Ada.Strings;
+with Text_IO;
 
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
@@ -93,9 +94,9 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Problem.Start;
    end Button_Start_On_Click;
 
-   --------------------------
-   -- Button_Step_On_Click --
-   --------------------------
+   --------------------
+   -- Pause_Callback --
+   --------------------
 
    procedure Pause_Callback
      (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class)
@@ -128,9 +129,9 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Problem.Continue;
    end Button_Continue_On_Click;
 
-   --------------------------
-   -- Button_Stop_On_Click --
-   --------------------------
+   -------------------
+   -- Stop_Callback --
+   -------------------
 
    procedure Stop_Callback
      (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class)
@@ -147,6 +148,10 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Button_Bar.Stop.Disabled;
    end Stop_Callback;
 
+   --------------------------
+   -- Button_Stop_On_Click --
+   --------------------------
+
    procedure Button_Stop_On_Click
      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
    is
@@ -155,6 +160,46 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
       App.Problem.Stop;
       Stop_Callback (Object.Connection_Data);
    end Button_Stop_On_Click;
+
+   procedure Answer_Callback
+     (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class;
+      Answer   : String)
+   is
+      App : constant App_Access := App_Access (App_Data);
+   begin
+      Text_IO.Put_Line ("-- ANSWER " & Answer);
+      Text_IO.Put_Line
+        ("--    Element " & App.Panel_Answer.Element ("answer-value")'Image);
+      App.Panel_Answer.Element ("answer-value").Inner_HTML
+        (UXS ("<h3>" & Answer & "</h3>"));
+      App.Panel_Answer.Element ("answer-value").Visible;
+
+      declare
+         Correct        : Boolean;
+         Known_Solution : Boolean;
+         Check : constant Gnoga.Gui.Element.Pointer_To_Element_Class :=
+           App.Panel_Answer.Element ("answer-check");
+      begin
+         Correct :=
+           Check_Solution (App.Problem.Number, Answer, Known_Solution);
+
+         Text_IO.Put_Line ("--    Check " & Check'Image);
+         Text_IO.Put_Line ("--    Correct " & Correct'Image);
+
+         if Known_Solution then
+            if Correct then
+               Check.Inner_HTML
+                 ("<span class='badge text-bg-success fs-5'>success</span>");
+            else
+               Check.Inner_HTML
+                 ("<span class='badge text-bg-danger fs-5'>error</span>");
+            end if;
+         else
+            Check.Inner_HTML
+              ("<span class='badge text-bg-warning fs-5'>unknown</span>");
+         end if;
+      end;
+   end Answer_Callback;
 
    --------------------
    -- On_App_Connect --
@@ -233,17 +278,43 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
 
       App.Panel_Answer := App.Grid.Panel (3, 2);
       App.Panel_Answer.Class_Name ("answer");
-      App.Panel_Answer.Put_HTML (UXS ("<h3>Answer:<h3>"));
+
+      declare
+         Answer_Title : Gnoga.Gui.Element.Pointer_To_Element_Class :=
+           new Gnoga.Gui.Element.Element_Type;
+         Answer_Value : Gnoga.Gui.Element.Pointer_To_Element_Class :=
+           new Gnoga.Gui.Element.Element_Type;
+         Answer_Check : Gnoga.Gui.Element.Pointer_To_Element_Class :=
+           new Gnoga.Gui.Element.Element_Type;
+      begin
+         Answer_Title.Create_From_HTML
+           (App.Panel_Answer.all, "<div><h3>Answer:</h3></div>",
+            "answer-title");
+         Answer_Title.Class_Name ("div_left");
+         Answer_Title.Place_Inside_Top_Of (App.Panel_Answer.all);
+
+         Answer_Value.Create_From_HTML
+           (App.Panel_Answer.all, "<div><h3></h3></div>", "answer-value");
+         Answer_Value.Class_Name ("div_left");
+         App.Panel_Answer.Add_Element ("answer-value", Answer_Value);
+         Answer_Value.Place_After (Answer_Title.all);
+
+         Answer_Check.Create_From_HTML
+           (App.Panel_Answer.all, "<div><span></span></div>", "answer-check");
+         Answer_Check.Class_Name ("div_left");
+         App.Panel_Answer.Add_Element ("answer-check", Answer_Check);
+         Answer_Check.Place_After (Answer_Value.all);
+      end;
 
       App.Plotter.Create
         (App.Grid.Panel (2, 2), Pause_Callback'Access, Stop_Callback'Access,
-         Main_Window.Connection_Data);
+         Answer_Callback'Access, Main_Window.Connection_Data);
       App.Problem.Initialize (App.Plotter'Access);
    end On_App_Connect;
 
-   ----------
-   -- Main --
-   ----------
+   ---------
+   -- Run --
+   ---------
 
    overriding procedure Run
      (Runner          : Gnoga_Runner_Type;

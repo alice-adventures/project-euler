@@ -25,15 +25,20 @@ package Project_Euler.GUI.Plotter.Canvas is
 
    procedure Create
      (P : in out Canvas_Type; View : Gnoga.Gui.View.Pointer_To_View_Base_Class;
-      Pause_Callback :        not null Runner_Callback;
-      Stop_Callback  :        not null Runner_Callback;
-      App_Data       : not null Gnoga.Types.Pointer_to_Connection_Data_Class);
+      Pause_Callback  :        not null Runner_Control_Callback;
+      Stop_Callback   :        not null Runner_Control_Callback;
+      Answer_Callback :        not null Runner_Answer_Callback;
+      App_Data        : not null Gnoga.Types.Pointer_to_Connection_Data_Class);
+
+   --  Plotter_Control_IFace
 
    overriding procedure Start (P : in out Canvas_Type);
 
    overriding procedure Pause (P : in out Canvas_Type);
 
    overriding procedure Stop (P : in out Canvas_Type);
+
+   --  Plotter_Drawing_IFace
 
    overriding procedure Clear_Plot (P : in out Canvas_Type);
 
@@ -89,6 +94,10 @@ package Project_Euler.GUI.Plotter.Canvas is
    overriding procedure Text
      (P : in out Canvas_Type; X, Y : Float; Text : String);
 
+   overriding procedure Answer (P : in out Canvas_Type; Answer : String);
+   --  Tells the plotter to show the answer: optionally, it can show
+   --  whether the answer is good or wrong, if solution is known.
+
 private
 
    type Axis_Type is record
@@ -100,13 +109,14 @@ private
    end record;
 
    type Canvas_Type is limited new Plotter_Type with record
-      Back           : Gnoga.Gui.Element.Canvas.Canvas_Type;
-      Draw           : Gnoga.Gui.Element.Canvas.Canvas_Type;
-      Info           : Gnoga.Gui.Element.Canvas.Canvas_Type;
-      Pause_Callback : Runner_Callback                              := null;
-      Stop_Callback  : Runner_Callback                              := null;
-      App_Data       : Gnoga.Types.Pointer_to_Connection_Data_Class := null;
-      X, Y           : Axis_Type;
+      Back            : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Draw            : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Info            : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Pause_Callback  : Runner_Control_Callback                      := null;
+      Stop_Callback   : Runner_Control_Callback                      := null;
+      Answer_Callback : Runner_Answer_Callback                       := null;
+      App_Data        : Gnoga.Types.Pointer_to_Connection_Data_Class := null;
+      X, Y            : Axis_Type;
    end record;
 
 end Project_Euler.GUI.Plotter.Canvas;

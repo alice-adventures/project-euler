@@ -128,15 +128,17 @@ package body Project_Euler.GUI.Plotter.Canvas is
 
    procedure Create
      (P : in out Canvas_Type; View : Gnoga.Gui.View.Pointer_To_View_Base_Class;
-      Pause_Callback :        not null Runner_Callback;
-      Stop_Callback  :        not null Runner_Callback;
-      App_Data       : not null Gnoga.Types.Pointer_to_Connection_Data_Class)
+      Pause_Callback  :        not null Runner_Control_Callback;
+      Stop_Callback   :        not null Runner_Control_Callback;
+      Answer_Callback :        not null Runner_Answer_Callback;
+      App_Data        : not null Gnoga.Types.Pointer_to_Connection_Data_Class)
    is
       Context : Context_2D_Type;
    begin
-      P.Pause_Callback := Pause_Callback;
-      P.Stop_Callback  := Stop_Callback;
-      P.App_Data       := App_Data;
+      P.Pause_Callback  := Pause_Callback;
+      P.Stop_Callback   := Stop_Callback;
+      P.Answer_Callback := Answer_Callback;
+      P.App_Data        := App_Data;
 
       P.Back.Create
         (Parent => View.all, Width => View.Width, Height => View.Height,
@@ -741,5 +743,14 @@ package body Project_Euler.GUI.Plotter.Canvas is
       Get_Context (Context, P);
       Context.Fill_Text (UXS (Text), Sx (P, X), Sy (P, Y));
    end Text;
+
+   ------------
+   -- Answer --
+   ------------
+
+   overriding procedure Answer (P : in out Canvas_Type; Answer : String) is
+   begin
+      P.Answer_Callback.all (P.App_Data, Answer);
+   end Answer;
 
 end Project_Euler.GUI.Plotter.Canvas;
