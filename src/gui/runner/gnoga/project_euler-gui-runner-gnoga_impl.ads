@@ -14,18 +14,23 @@ with Gnoga.Types;
 package Project_Euler.GUI.Runner.Gnoga_Impl is
 
    type Gnoga_Runner_Type is new GUI_Runner_Type with null record;
+   --  Implementation of the GUI.Runner interface using Gnoga.
+
+   overriding procedure Run
+     (Runner          : Gnoga_Runner_Type;
+      Problem_Factory : Pointer_To_Problem_Factory_Function);
+   --  Main procedure to run the Problem.
 
    type Runner_Control_Callback is
      access procedure
        (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class);
+   --  Callback used by the Plotter when the user press some control button,
+   --  mainly Continue or Stop.
 
    type Runner_Answer_Callback is
      access procedure
        (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class;
         Answer   : String);
-
-   overriding procedure Run
-     (Runner          : Gnoga_Runner_Type;
-      Problem_Factory : Pointer_To_Problem_Factory_Function);
+   --  Callback used by the Plotter when the Problem sets the Answer.
 
 end Project_Euler.GUI.Runner.Gnoga_Impl;
