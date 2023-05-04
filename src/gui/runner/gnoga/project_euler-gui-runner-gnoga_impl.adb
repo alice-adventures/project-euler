@@ -328,7 +328,7 @@ package body Project_Euler.GUI.Runner.Gnoga_Impl is
         ("<h3 style='margin:50px;'>Application closed.<h3>");
 
       Gnoga.Application.Multi_Connect.Initialize
-        (Event => On_App_Connect'Unrestricted_Access, Host => "localhost");
+        (Event => On_App_Connect'Unrestricted_Access, Host => "0.0.0.0");
 
       Gnoga.Application.Multi_Connect.Message_Loop;
    end Run;
