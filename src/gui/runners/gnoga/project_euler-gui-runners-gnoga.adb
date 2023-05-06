@@ -42,7 +42,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
       Button_Bar   : Button_Bar_Type;
       Panel_Answer : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Plotter      : aliased Canvas_Type;
-      Problem      : Pointer_To_Problem_Class := null;
+      Problem      : Pointer_To_Problem_Task := null;
    end record;
    type App_Access is access all App_Data_Type;
 
@@ -55,8 +55,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
    procedure Button_Stop_On_Click
      (Object : in out The_Gnoga.Gui.Base.Base_Type'Class);
 
-   Problem_Factory :
-     Project_Euler.GUI.Problems.Pointer_To_Problem_Factory_Function :=
+   Problem_Factory : Project_Euler.GUI.Problems.Pointer_To_Problem_Factory :=
      null;
 
    ---------
@@ -320,8 +319,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
 
    overriding procedure Run
      (Runner          : Gnoga_Runner_Type;
-      Problem_Factory : Project_Euler.GUI.Problems
-        .Pointer_To_Problem_Factory_Function)
+      Problem_Factory : Project_Euler.GUI.Problems.Pointer_To_Problem_Factory)
    is
    begin
       Project_Euler.GUI.Runners.Gnoga.Problem_Factory := Problem_Factory;

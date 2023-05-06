@@ -29,13 +29,15 @@ package Project_Euler.GUI.Plotter_Drawing is
    procedure Clear_Plot (Plotter : in out Drawing_Interface) is abstract;
    --  Cleat the Plot and Info areas; keeps the Axes area intact.
 
-   procedure Set_Layer_Normal (Plotter : in out Drawing_Interface) is abstract;
-   --  Switch to the Normal layer (below the Info layer), until
-   --  Set_Layer_Info is called. Normal layer is the default on start.
+   procedure Set_Layer_Drawing
+     (Plotter : in out Drawing_Interface) is abstract;
+   --  Switch to the Drawing layer (below the Info layer), until
+   --  Set_Layer_Info is called. Drawing layer is the default on start.
 
-   procedure Set_Layer_Info (Plotter : in out Drawing_Interface) is abstract;
-   --  Switch to the Info layer (on top of the Normal layer), until
-   --  Set_Layer_Normal is called.
+   procedure Set_Layer_Information
+     (Plotter : in out Drawing_Interface) is abstract;
+   --  Switch to the Information layer (on top of the Drawing layer), until
+   --  Set_Layer_Drawing is called.
 
    procedure Set_Axes
      (Plotter : in out Drawing_Interface; Min, Max : Float) is abstract;

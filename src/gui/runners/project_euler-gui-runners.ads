@@ -14,7 +14,7 @@ package Project_Euler.GUI.Runners is
 
    procedure Run
      (Runner  : Runner_Type;
-      Factory : Problems.Pointer_To_Problem_Factory_Function) is abstract;
+      Factory : Problems.Pointer_To_Problem_Factory) is abstract;
    --  Main entry point of a program that interacts with a Problem that
    --  implements the GUI.
 

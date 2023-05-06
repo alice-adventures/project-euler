@@ -17,8 +17,6 @@ use Gnoga.Gui.Element.Canvas.Context_2D;
 
 package body Project_Euler.GUI.Plotters.Canvas is
 
-   Current_Canvas : Canvas_Name := Draw;
-
    Font_Family_Axis   : constant String  := "Arial";
    Font_Height_Small  : constant String  := "12px";
    Font_Height_Medium : constant String  := "14px";
@@ -27,19 +25,23 @@ package body Project_Euler.GUI.Plotters.Canvas is
    Font_Size_Medium   : constant Natural := 14;
    Font_Size_Big      : constant Natural := 16;
 
+   --  keep definitions although not used (yet)
+   pragma Unreferenced (Font_Height_Medium);
+   pragma Unreferenced (Font_Size_Medium);
+
    -----------------
    -- Get_Context --
    -----------------
 
    procedure Get_Context
-     (Context : in out Context_2D_Type; P : in out Canvas_Type)
+     (Context : in out Context_2D_Type; Plotter : in out Canvas_Type) with
+     Inline
    is
    begin
-      pragma Inline (Get_Context);
-      if Current_Canvas = Draw then
-         Context.Get_Drawing_Context_2D (P.Draw);
+      if Plotter.Current_Layer = Draw then
+         Context.Get_Drawing_Context_2D (Plotter.Drawing);
       else
-         Context.Get_Drawing_Context_2D (P.Info);
+         Context.Get_Drawing_Context_2D (Plotter.Information);
       end if;
    end Get_Context;
 
@@ -47,57 +49,51 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Screen_X --
    --------------
 
-   function Screen_X (P : in out Canvas_Type; Px : Float) return Natural is
-      Sx : constant Float := (Px - P.X.Min) / (P.X.Max - P.X.Min);
+   function Screen_X (Plotter : in out Canvas_Type; Px : Float) return Natural
+   is
+      Sx : constant Float :=
+        (Px - Plotter.X.Min) / (Plotter.X.Max - Plotter.X.Min);
    begin
       return
         Natural
-          (Float (P.X.Margin) +
+          (Float (Plotter.X.Margin) +
            Float'Rounding
-             ((Float (P.X.Width) - 2.0 * Float (P.X.Margin)) * Sx));
+             ((Float (Plotter.X.Width) - 2.0 * Float (Plotter.X.Margin)) *
+              Sx));
    end Screen_X;
 
-   function Sx (P : in out Canvas_Type; Px : Float) return Natural renames
+   --------
+   -- Sx --
+   --------
+
+   function Sx
+     (Plotter : in out Canvas_Type; Px : Float) return Natural renames
      Screen_X;
 
    --------------
    -- Screen_Y --
    --------------
 
-   function Screen_Y (P : in out Canvas_Type; Py : Float) return Natural is
-      Sy : constant Float := (Py - P.Y.Min) / (P.Y.Max - P.Y.Min);
+   function Screen_Y (Plotter : in out Canvas_Type; Py : Float) return Natural
+   is
+      Sy : constant Float :=
+        (Py - Plotter.Y.Min) / (Plotter.Y.Max - Plotter.Y.Min);
    begin
       return
         Natural
-          (Float (P.Y.Width - P.Y.Margin) -
+          (Float (Plotter.Y.Width - Plotter.Y.Margin) -
            Float'Rounding
-             ((Float (P.Y.Width) - 2.0 * Float (P.Y.Margin)) * Sy));
+             ((Float (Plotter.Y.Width) - 2.0 * Float (Plotter.Y.Margin)) *
+              Sy));
    end Screen_Y;
 
-   function Sy (P : in out Canvas_Type; Py : Float) return Natural renames
+   --------
+   -- Sy --
+   --------
+
+   function Sy
+     (Plotter : in out Canvas_Type; Py : Float) return Natural renames
      Screen_Y;
-
-   ------------
-   -- Math_X --
-   ------------
-
-   --  function Math_X (P : in out Canvas_Type; Sx : Natural) return Float is
-   --     Dx : constant Float :=
-   --       Float (Sx - P.X.Margin) / Float (P.X.Width - 2 * P.X.Margin);
-   --  begin
-   --     return Dx * (P.X.Max - P.X.Min) + P.X.Min;
-   --  end Math_X;
-
-   ------------
-   -- Math_X --
-   ------------
-
-   --  function Math_Y (P : in out Canvas_Type; Sy : Natural) return Float is
-   --     Dy : constant Float :=
-   --       Float (Sy - P.Y.Width + P.Y.Margin) / Float (P.Y.Width - 2 * P.Y.Margin);
-   --  begin
-   --     return Dy * (P.Y.Max - P.Y.Min) + P.Y.Min;
-   --  end Math_Y;
 
    ---------
    -- UXS --
@@ -108,26 +104,12 @@ package body Project_Euler.GUI.Plotters.Canvas is
      UXStrings.From_ASCII;
 
    ------------
-   -- Canvas --
-   ------------
-
-   function Canvas
-     (P : Canvas_Type; Name : Canvas_Name)
-      return Gnoga.Gui.Element.Canvas.Canvas_Access
-   is
-   begin
-      return
-        (if Name = Back then P.Back'Unrestricted_Access
-         elsif Name = Draw then P.Draw'Unrestricted_Access
-         else P.Info'Unrestricted_Access);
-   end Canvas;
-
-   ------------
    -- Create --
    ------------
 
    procedure Create
-     (P : in out Canvas_Type; View : Gnoga.Gui.View.Pointer_To_View_Base_Class;
+     (Plotter         : in out Canvas_Type;
+      View            :        Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Pause_Callback  :        not null Runner_Control_Callback;
       Stop_Callback   :        not null Runner_Control_Callback;
       Answer_Callback :        not null Runner_Answer_Callback;
@@ -135,130 +117,136 @@ package body Project_Euler.GUI.Plotters.Canvas is
    is
       Context : Context_2D_Type;
    begin
-      P.Pause_Callback  := Pause_Callback;
-      P.Stop_Callback   := Stop_Callback;
-      P.Answer_Callback := Answer_Callback;
-      P.App_Data        := App_Data;
+      Plotter.Current_Layer   := Draw;
+      Plotter.Pause_Callback  := Pause_Callback;
+      Plotter.Stop_Callback   := Stop_Callback;
+      Plotter.Answer_Callback := Answer_Callback;
+      Plotter.App_Data        := App_Data;
 
-      P.Back.Create
+      Plotter.Background.Create
         (Parent => View.all, Width => View.Width, Height => View.Height,
          ID     => "Canvas.Back");
-      P.Back.Style ("position", "absolute");
-      P.Back.Style ("left", 0);
-      P.Back.Style ("top", 0);
+      Plotter.Background.Style ("position", "absolute");
+      Plotter.Background.Style ("left", 0);
+      Plotter.Background.Style ("top", 0);
 
-      Context.Get_Drawing_Context_2D (P.Back);
+      Context.Get_Drawing_Context_2D (Plotter.Background);
       Context.Fill_Color ("#fff");
-      Context.Fill_Rectangle ((0, 0, P.Back.Width, P.Back.Height));
+      Context.Fill_Rectangle
+        ((0, 0, Plotter.Background.Width, Plotter.Background.Height));
 
-      P.Draw.Create
+      Plotter.Drawing.Create
         (Parent => View.all, Width => View.Width, Height => View.Height,
          ID     => "Canvas.Draw");
-      P.Draw.Style ("position", "absolute");
-      P.Draw.Style ("left", 0);
-      P.Draw.Style ("top", 0);
+      Plotter.Drawing.Style ("position", "absolute");
+      Plotter.Drawing.Style ("left", 0);
+      Plotter.Drawing.Style ("top", 0);
 
-      P.Info.Create
+      Plotter.Information.Create
         (Parent => View.all, Width => View.Width, Height => View.Height,
          ID     => "Canvas.Info");
-      P.Info.Style ("position", "absolute");
-      P.Info.Style ("left", 0);
-      P.Info.Style ("top", 0);
+      Plotter.Information.Style ("position", "absolute");
+      Plotter.Information.Style ("left", 0);
+      Plotter.Information.Style ("top", 0);
    end Create;
 
-   -------------------
-   -- Start_Plotter --
-   -------------------
+   -----------
+   -- Start --
+   -----------
 
-   overriding procedure Start (P : in out Canvas_Type) is
+   overriding procedure Start (Plotter : in out Canvas_Type) is
    begin
-      Current_Canvas := Info;
-      P.Clear_Plot;
-      Current_Canvas := Draw;
-      P.Clear_Plot;
+      Plotter.Current_Layer := Info;
+      Plotter.Clear_Plot;
+      Plotter.Current_Layer := Draw;
+      Plotter.Clear_Plot;
    end Start;
 
-   -------------------
-   -- Pause_Plotter --
-   -------------------
+   -----------
+   -- Pause --
+   -----------
 
-   overriding procedure Pause (P : in out Canvas_Type) is
+   overriding procedure Pause (Plotter : in out Canvas_Type) is
    begin
-      P.Pause_Callback.all (P.App_Data);
+      Plotter.Pause_Callback.all (Plotter.App_Data);
    end Pause;
 
-   ------------------
-   -- Stop_Plotter --
-   ------------------
+   ----------
+   -- Stop --
+   ----------
 
-   overriding procedure Stop (P : in out Canvas_Type) is
+   overriding procedure Stop (Plotter : in out Canvas_Type) is
    begin
-      P.Stop_Callback.all (P.App_Data);
+      Plotter.Stop_Callback.all (Plotter.App_Data);
    end Stop;
 
    ----------------
    -- Clear_Plot --
    ----------------
 
-   overriding procedure Clear_Plot (P : in out Canvas_Type) is
+   overriding procedure Clear_Plot (Plotter : in out Canvas_Type) is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
 
       Context.Begin_Path;
-      Context.Clear_Rectangle ([0, 0, P.Draw.Width, P.Draw.Height]);
+      Context.Clear_Rectangle
+        ([0, 0, Plotter.Drawing.Width, Plotter.Drawing.Height]);
    end Clear_Plot;
 
-   ----------------------
-   -- Set_Layer_Normal --
-   ----------------------
+   -----------------------
+   -- Set_Layer_Drawing --
+   -----------------------
 
-   overriding procedure Set_Layer_Normal (P : in out Canvas_Type) is
+   overriding procedure Set_Layer_Drawing (Plotter : in out Canvas_Type) is
    begin
-      Current_Canvas := Draw;
-   end Set_Layer_Normal;
+      Plotter.Current_Layer := Draw;
+   end Set_Layer_Drawing;
 
-   --------------------
-   -- Set_Layer_Info --
-   --------------------
+   ---------------------------
+   -- Set_Layer_Information --
+   ---------------------------
 
-   overriding procedure Set_Layer_Info (P : in out Canvas_Type) is
+   overriding procedure Set_Layer_Information (Plotter : in out Canvas_Type) is
    begin
-      Current_Canvas := Info;
-   end Set_Layer_Info;
+      Plotter.Current_Layer := Info;
+   end Set_Layer_Information;
 
    --------------
    -- Set_Axes --
    --------------
 
-   overriding procedure Set_Axes (P : in out Canvas_Type; Min, Max : Float) is
+   overriding procedure Set_Axes
+     (Plotter : in out Canvas_Type; Min, Max : Float)
+   is
       Margin_Ratio : constant Natural := 5; -- in %
       Margin       : constant Natural :=
-        Natural'Max (P.Back.Width, P.Back.Height) * Margin_Ratio / 100;
+        Natural'Max (Plotter.Background.Width, Plotter.Background.Height) *
+        Margin_Ratio / 100;
       Length       : Float;
    begin
-      P.X.Width  := P.Back.Width;
-      P.X.Margin := Margin;
+      Plotter.X.Width  := Plotter.Background.Width;
+      Plotter.X.Margin := Margin;
 
-      P.Y.Width  := P.Back.Height;
-      P.Y.Margin := Margin;
+      Plotter.Y.Width  := Plotter.Background.Height;
+      Plotter.Y.Margin := Margin;
 
-      if P.X.Width <= P.Y.Width then
-         P.X.Min := Min;
-         P.X.Max := Max;
-         Length  :=
-           (Max - Min) * Float (P.Y.Width - 2 * P.Y.Margin) /
-           Float (P.X.Width - 2 * P.X.Margin);
-         P.Y.Min := -Length / 2.0;
-         P.Y.Max := Length / 2.0;
+      if Plotter.X.Width <= Plotter.Y.Width then
+         Plotter.X.Min := Min;
+         Plotter.X.Max := Max;
+         Length        :=
+           (Max - Min) * Float (Plotter.Y.Width - 2 * Plotter.Y.Margin) /
+           Float (Plotter.X.Width - 2 * Plotter.X.Margin);
+         Plotter.Y.Min := -Length / 2.0;
+         Plotter.Y.Max := Length / 2.0;
       else
-         P.Y.Min := Min;
-         P.Y.Max := Max;
-         Length  :=
-           (Max - Min) * Float (P.X.Width - 2 * P.X.Margin) /
-           Float (P.Y.Width - 2 * P.Y.Margin);
-         P.X.Min := (-Length + Max - Min) / 2.0;
-         P.X.Max := (Length + Max - Min) / 2.0;
+         Plotter.Y.Min := Min;
+         Plotter.Y.Max := Max;
+         Length        :=
+           (Max - Min) * Float (Plotter.X.Width - 2 * Plotter.X.Margin) /
+           Float (Plotter.Y.Width - 2 * Plotter.Y.Margin);
+         Plotter.X.Min := (-Length + Max - Min) / 2.0;
+         Plotter.X.Max := (Length + Max - Min) / 2.0;
       end if;
    end Set_Axes;
 
@@ -267,21 +255,22 @@ package body Project_Euler.GUI.Plotters.Canvas is
    --------------
 
    overriding procedure Set_Axes
-     (P : in out Canvas_Type; X_Min, X_Max, Y_Min, Y_Max : Float)
+     (Plotter : in out Canvas_Type; X_Min, X_Max, Y_Min, Y_Max : Float)
    is
       Margin_Ratio : constant Natural := 5; -- in %
       Margin       : constant Natural :=
-        Natural'Max (P.Back.Width, P.Back.Height) * Margin_Ratio / 100;
+        Natural'Max (Plotter.Background.Width, Plotter.Background.Height) *
+        Margin_Ratio / 100;
    begin
-      P.X.Min    := X_Min;
-      P.X.Max    := X_Max;
-      P.X.Width  := P.Back.Width;
-      P.X.Margin := Margin;
+      Plotter.X.Min    := X_Min;
+      Plotter.X.Max    := X_Max;
+      Plotter.X.Width  := Plotter.Background.Width;
+      Plotter.X.Margin := Margin;
 
-      P.Y.Min    := Y_Min;
-      P.Y.Max    := Y_Max;
-      P.Y.Width  := P.Back.Height;
-      P.Y.Margin := Margin;
+      Plotter.Y.Min    := Y_Min;
+      Plotter.Y.Max    := Y_Max;
+      Plotter.Y.Width  := Plotter.Background.Height;
+      Plotter.Y.Margin := Margin;
    end Set_Axes;
 
    ---------------
@@ -289,7 +278,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Draw_Grid
-     (P : in out Canvas_Type; X_Major, X_Minor, Y_Major, Y_Minor : Float)
+     (Plotter : in out Canvas_Type; X_Major, X_Minor, Y_Major, Y_Minor : Float)
    is
       subtype Label_Type is String (1 .. 12);
 
@@ -307,35 +296,41 @@ package body Project_Euler.GUI.Plotters.Canvas is
          end if;
 
          if Is_Major then
-            P.X.Has_Ticks := True;
+            Plotter.X.Has_Ticks := True;
          end if;
 
          Px    := 0.0;
          Count := 0;
          loop
-            Context.Move_To (Sx (P, Px), Sy (P, P.Y.Min));
-            Context.Line_To (Sx (P, Px), Sy (P, P.Y.Max));
+            Context.Move_To (Sx (Plotter, Px), Sy (Plotter, Plotter.Y.Min));
+            Context.Line_To (Sx (Plotter, Px), Sy (Plotter, Plotter.Y.Max));
             Px    := @ - Δx;
             Count := @ + 1;
-            exit when Px < P.X.Min;
+            exit when Px < Plotter.X.Min;
          end loop;
-         if Is_Major and then (Count = 0 or else Px - P.X.Min < Δx / 3.0) then
-            Context.Move_To (Sx (P, P.X.Min), Sy (P, P.Y.Min));
-            Context.Line_To (Sx (P, P.X.Min), Sy (P, P.Y.Max));
+         if Is_Major and then (Count = 0 or else Px - Plotter.X.Min < Δx / 3.0)
+         then
+            Context.Move_To
+              (Sx (Plotter, Plotter.X.Min), Sy (Plotter, Plotter.Y.Min));
+            Context.Line_To
+              (Sx (Plotter, Plotter.X.Min), Sy (Plotter, Plotter.Y.Max));
          end if;
 
          Px    := 0.0;
          Count := 0;
          loop
-            Context.Move_To (Sx (P, Px), Sy (P, P.Y.Min));
-            Context.Line_To (Sx (P, Px), Sy (P, P.Y.Max));
+            Context.Move_To (Sx (Plotter, Px), Sy (Plotter, Plotter.Y.Min));
+            Context.Line_To (Sx (Plotter, Px), Sy (Plotter, Plotter.Y.Max));
             Px    := @ + Δx;
             Count := @ + 1;
-            exit when Px > P.X.Max;
+            exit when Px > Plotter.X.Max;
          end loop;
-         if Is_Major and then (Count = 0 or else P.X.Max - Px < Δx / 3.0) then
-            Context.Move_To (Sx (P, P.X.Max), Sy (P, P.Y.Min));
-            Context.Line_To (Sx (P, P.X.Max), Sy (P, P.Y.Max));
+         if Is_Major and then (Count = 0 or else Plotter.X.Max - Px < Δx / 3.0)
+         then
+            Context.Move_To
+              (Sx (Plotter, Plotter.X.Max), Sy (Plotter, Plotter.Y.Min));
+            Context.Line_To
+              (Sx (Plotter, Plotter.X.Max), Sy (Plotter, Plotter.Y.Max));
          end if;
       end Draw_X;
 
@@ -346,35 +341,41 @@ package body Project_Euler.GUI.Plotters.Canvas is
          end if;
 
          if Is_Major then
-            P.Y.Has_Ticks := True;
+            Plotter.Y.Has_Ticks := True;
          end if;
 
          Py    := 0.0;
          Count := 0;
          loop
-            Context.Move_To (Sx (P, P.X.Min), Sy (P, Py));
-            Context.Line_To (Sx (P, P.X.Max), Sy (P, Py));
+            Context.Move_To (Sx (Plotter, Plotter.X.Min), Sy (Plotter, Py));
+            Context.Line_To (Sx (Plotter, Plotter.X.Max), Sy (Plotter, Py));
             Py    := @ - Δy;
             Count := @ + 1;
-            exit when Py < P.Y.Min;
+            exit when Py < Plotter.Y.Min;
          end loop;
-         if Is_Major and then (Count = 0 or else Py - P.Y.Min < Δy / 3.0) then
-            Context.Move_To (Sx (P, P.X.Min), Sy (P, P.Y.Min));
-            Context.Line_To (Sx (P, P.X.Max), Sy (P, P.Y.Min));
+         if Is_Major and then (Count = 0 or else Py - Plotter.Y.Min < Δy / 3.0)
+         then
+            Context.Move_To
+              (Sx (Plotter, Plotter.X.Min), Sy (Plotter, Plotter.Y.Min));
+            Context.Line_To
+              (Sx (Plotter, Plotter.X.Max), Sy (Plotter, Plotter.Y.Min));
          end if;
 
          Py    := 0.0;
          Count := 0;
          loop
-            Context.Move_To (Sx (P, P.X.Min), Sy (P, Py));
-            Context.Line_To (Sx (P, P.X.Max), Sy (P, Py));
+            Context.Move_To (Sx (Plotter, Plotter.X.Min), Sy (Plotter, Py));
+            Context.Line_To (Sx (Plotter, Plotter.X.Max), Sy (Plotter, Py));
             Py    := @ + Δy;
             Count := @ + 1;
-            exit when Py > P.Y.Max;
+            exit when Py > Plotter.Y.Max;
          end loop;
-         if Is_Major and then (Count = 0 or else P.Y.Max - Py < Δy / 3.0) then
-            Context.Move_To (Sx (P, P.X.Min), Sy (P, P.Y.Max));
-            Context.Line_To (Sx (P, P.X.Max), Sy (P, P.Y.Max));
+         if Is_Major and then (Count = 0 or else Plotter.Y.Max - Py < Δy / 3.0)
+         then
+            Context.Move_To
+              (Sx (Plotter, Plotter.X.Min), Sy (Plotter, Plotter.Y.Max));
+            Context.Line_To
+              (Sx (Plotter, Plotter.X.Max), Sy (Plotter, Plotter.Y.Max));
          end if;
       end Draw_Y;
 
@@ -391,7 +392,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
       --  #end region
 
    begin
-      Context.Get_Drawing_Context_2D (P.Back);
+      Context.Get_Drawing_Context_2D (Plotter.Background);
 
       --  minor ticks
       Context.Stroke_Color ("#ccc");
@@ -424,24 +425,24 @@ package body Project_Euler.GUI.Plotters.Canvas is
          Px    := -X_Major;
          Count := 0;
          loop
-            exit when Px < P.X.Min;
+            exit when Px < Plotter.X.Min;
             Set_Label (Label, Px);
             Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS (Label), Sx (P, Px) - Length / 2,
-               Sy (P, 0.0) + Font_Size_Small + 2, Length);
+              (UXS (Label), Sx (Plotter, Px) - Length / 2,
+               Sy (Plotter, 0.0) + Font_Size_Small + 2, Length);
             Px := @ - X_Major;
          end loop;
 
          Px    := X_Major;
          Count := 0;
          loop
-            exit when Px > P.X.Max;
+            exit when Px > Plotter.X.Max;
             Set_Label (Label, Px);
             Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS (Label), Sx (P, Px) - Length / 2,
-               Sy (P, 0.0) + Font_Size_Small + 2, Length);
+              (UXS (Label), Sx (Plotter, Px) - Length / 2,
+               Sy (Plotter, 0.0) + Font_Size_Small + 2, Length);
             Px := @ + X_Major;
          end loop;
       end if;
@@ -452,18 +453,19 @@ package body Project_Euler.GUI.Plotters.Canvas is
          Py    := -Y_Major;
          Count := 0;
          loop
-            exit when Py < P.Y.Min;
+            exit when Py < Plotter.Y.Min;
             Set_Label (Label, Py);
             Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS (Label), Sx (P, 0.0) - Length - 3, Sy (P, Py) - 2, Length);
+              (UXS (Label), Sx (Plotter, 0.0) - Length - 3,
+               Sy (Plotter, Py) - 2, Length);
             Py := @ - Y_Major;
          end loop;
 
          Py    := Y_Major;
          Count := 0;
          loop
-            exit when Py > P.Y.Max;
+            exit when Py > Plotter.Y.Max;
             if Count < 1_000_000 then
                Ada.Float_Text_IO.Put (To => Label, Item => Py);
             else
@@ -473,7 +475,8 @@ package body Project_Euler.GUI.Plotters.Canvas is
             Set_Label (Label, Py);
             Length := Font_Size_Small / 2 * UXStrings.Length (UXS (Label));
             Context.Fill_Text
-              (UXS (Label), Sx (P, 0.0) - Length - 3, Sy (P, Py) - 2, Length);
+              (UXS (Label), Sx (Plotter, 0.0) - Length - 3,
+               Sy (Plotter, Py) - 2, Length);
             Py := @ + Y_Major;
          end loop;
       end if;
@@ -484,22 +487,22 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Draw_Axes
-     (P : in out Canvas_Type; X_Label, Y_Label : String)
+     (Plotter : in out Canvas_Type; X_Label, Y_Label : String)
    is
       Context : Context_2D_Type;
       Length  : Natural;
    begin
-      Context.Get_Drawing_Context_2D (P.Back);
+      Context.Get_Drawing_Context_2D (Plotter.Background);
 
       Context.Stroke_Color ("#000");
       Context.Line_Width (2);
       Context.Begin_Path;
 
-      Context.Move_To (Sx (P, P.X.Min), Sy (P, 0.0));
-      Context.Line_To (Sx (P, P.X.Max), Sy (P, 0.0));
+      Context.Move_To (Sx (Plotter, Plotter.X.Min), Sy (Plotter, 0.0));
+      Context.Line_To (Sx (Plotter, Plotter.X.Max), Sy (Plotter, 0.0));
 
-      Context.Move_To (Sx (P, 0.0), Sy (P, P.Y.Min));
-      Context.Line_To (Sx (P, 0.0), Sy (P, P.Y.Max));
+      Context.Move_To (Sx (Plotter, 0.0), Sy (Plotter, Plotter.Y.Min));
+      Context.Line_To (Sx (Plotter, 0.0), Sy (Plotter, Plotter.Y.Max));
 
       Context.Font (UXS (Font_Family_Axis), UXS (Font_Height_Big));
       Context.Fill_Color ("#000");
@@ -508,18 +511,18 @@ package body Project_Euler.GUI.Plotters.Canvas is
       Context.Text_Baseline (Top);
       Length := 6 * UXStrings.Length (UXS (X_Label));
       Context.Fill_Text
-        (UXS (X_Label), Sx (P, P.X.Max) - Length / 2,
-         Sy (P, 0.0) + 2 +
-         (if P.X.Has_Ticks then Font_Size_Big * 2 else Font_Size_Big),
+        (UXS (X_Label), Sx (Plotter, Plotter.X.Max) - Length / 2,
+         Sy (Plotter, 0.0) + 2 +
+         (if Plotter.X.Has_Ticks then Font_Size_Big * 2 else Font_Size_Big),
          Length);
 
       Context.Text_Alignment (Center);
       Context.Text_Baseline (Bottom);
       Length := 6 * UXStrings.Length (UXS (Y_Label));
       Context.Fill_Text
-        (UXS (Y_Label), Sx (P, 0.0) - Length / 2,
-         Sy (P, P.Y.Max) -
-         (if P.Y.Has_Ticks then Font_Size_Big * 2 else Font_Size_Big),
+        (UXS (Y_Label), Sx (Plotter, 0.0) - Length / 2,
+         Sy (Plotter, Plotter.Y.Max) -
+         (if Plotter.Y.Has_Ticks then Font_Size_Big * 2 else Font_Size_Big),
          Length);
 
       Context.Stroke;
@@ -529,22 +532,23 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Draw_Axes_Square --
    ----------------------
 
-   overriding procedure Draw_Axes_Rectangle (P : in out Canvas_Type) is
+   overriding procedure Draw_Axes_Rectangle (Plotter : in out Canvas_Type) is
       Context : Context_2D_Type;
-      X_Min   : constant Float := P.X.Min;
-      Y_Min   : constant Float := P.Y.Min;
-      X_Max   : constant Float := P.X.Max;
-      Y_Max   : constant Float := P.Y.Max;
+      X_Min   : constant Float := Plotter.X.Min;
+      Y_Min   : constant Float := Plotter.Y.Min;
+      X_Max   : constant Float := Plotter.X.Max;
+      Y_Max   : constant Float := Plotter.Y.Max;
    begin
-      Context.Get_Drawing_Context_2D (P.Back);
+      Context.Get_Drawing_Context_2D (Plotter.Background);
 
       Context.Begin_Path;
       Context.Stroke_Color ("#000000");
       Context.Line_Width (2);
       Context.Line_Join (Value => Round);
       Context.Rectangle
-        ([Sx (P, X_Min), Sy (P, Y_Min), Sx (P, X_Max) - Sx (P, X_Min),
-         Sy (P, Y_Max) - Sy (P, Y_Min)]);
+        ([Sx (Plotter, X_Min), Sy (Plotter, Y_Min),
+         Sx (Plotter, X_Max) - Sx (Plotter, X_Min),
+         Sy (Plotter, Y_Max) - Sy (Plotter, Y_Min)]);
       Context.Stroke;
    end Draw_Axes_Rectangle;
 
@@ -553,12 +557,12 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------
 
    overriding procedure Plot
-     (P : in out Canvas_Type; Points : Point_List; Color : String)
+     (Plotter : in out Canvas_Type; Points : Point_List; Color : String)
    is
       Context : Context_2D_Type;
       Point   : Math_Point;
    begin
-      Context.Get_Drawing_Context_2D (P.Draw);
+      Context.Get_Drawing_Context_2D (Plotter.Drawing);
 
       Context.Begin_Path;
       Context.Stroke_Color (UXS (Color));
@@ -566,9 +570,9 @@ package body Project_Euler.GUI.Plotters.Canvas is
       Context.Line_Join (Value => Miter);
 
       Point := Points.First_Element;
-      Context.Move_To (Sx (P, Point.X), Sy (P, Point.Y));
+      Context.Move_To (Sx (Plotter, Point.X), Sy (Plotter, Point.Y));
       for Point of Points loop
-         Context.Line_To (Sx (P, Point.X), Sy (P, Point.Y));
+         Context.Line_To (Sx (Plotter, Point.X), Sy (Plotter, Point.Y));
       end loop;
       Context.Stroke;
    end Plot;
@@ -577,10 +581,12 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Line_Width --
    ----------------
 
-   overriding procedure Line_Width (P : in out Canvas_Type; Width : Natural) is
+   overriding procedure Line_Width
+     (Plotter : in out Canvas_Type; Width : Natural)
+   is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
       Context.Line_Width (Width);
    end Line_Width;
 
@@ -589,11 +595,11 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Line_Dash
-     (P : in out Canvas_Type; Length : Natural; Gap : Natural)
+     (Plotter : in out Canvas_Type; Length : Natural; Gap : Natural)
    is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
       Context.Set_Line_Dash ([Length, Gap]);
    end Line_Dash;
 
@@ -601,11 +607,12 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Stroke_Color --
    ------------------
 
-   overriding procedure Stroke_Color (P : in out Canvas_Type; Color : String)
+   overriding procedure Stroke_Color
+     (Plotter : in out Canvas_Type; Color : String)
    is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
       Context.Stroke_Color (UXS (Color));
    end Stroke_Color;
 
@@ -613,10 +620,12 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Fill_Color --
    ----------------
 
-   overriding procedure Fill_Color (P : in out Canvas_Type; Color : String) is
+   overriding procedure Fill_Color
+     (Plotter : in out Canvas_Type; Color : String)
+   is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
       Context.Fill_Color (UXS (Color));
    end Fill_Color;
 
@@ -624,15 +633,16 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Line --
    ----------
 
-   overriding procedure Line (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
+   overriding procedure Line
+     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
 
       Context.Begin_Path;
-      Context.Move_To (Sx (P, X0), Sy (P, Y0));
-      Context.Line_To (Sx (P, X1), Sy (P, Y1));
+      Context.Move_To (Sx (Plotter, X0), Sy (Plotter, Y0));
+      Context.Line_To (Sx (Plotter, X1), Sy (Plotter, Y1));
       Context.Stroke;
    end Line;
 
@@ -641,15 +651,17 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Rectangle
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
+     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
-      X       : constant Natural := Natural'Min (Sx (P, X0), Sx (P, X1));
-      Y       : constant Natural := Natural'Min (Sy (P, Y0), Sy (P, Y1));
-      Width   : constant Natural := Natural (abs (Sx (P, X1) - Sx (P, X0)));
-      Height  : constant Natural := Natural (abs (Sy (P, Y1) - Sy (P, Y0)));
+      X : constant Natural := Natural'Min (Sx (Plotter, X0), Sx (Plotter, X1));
+      Y : constant Natural := Natural'Min (Sy (Plotter, Y0), Sy (Plotter, Y1));
+      Width   : constant Natural :=
+        Natural (abs (Sx (Plotter, X1) - Sx (Plotter, X0)));
+      Height  : constant Natural :=
+        Natural (abs (Sy (Plotter, Y1) - Sy (Plotter, Y0)));
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
 
       Context.Begin_Path;
       Context.Rectangle (Rectangle => [X, Y, Width, Height]);
@@ -661,15 +673,17 @@ package body Project_Euler.GUI.Plotters.Canvas is
    --------------------
 
    overriding procedure Fill_Rectangle
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
+     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
-      X       : constant Natural := Natural'Min (Sx (P, X0), Sx (P, X1));
-      Y       : constant Natural := Natural'Min (Sy (P, Y0), Sy (P, Y1));
-      Width   : constant Natural := Natural (abs (Sx (P, X1) - Sx (P, X0)));
-      Height  : constant Natural := Natural (abs (Sy (P, Y1) - Sy (P, Y0)));
+      X : constant Natural := Natural'Min (Sx (Plotter, X0), Sx (Plotter, X1));
+      Y : constant Natural := Natural'Min (Sy (Plotter, Y0), Sy (Plotter, Y1));
+      Width   : constant Natural :=
+        Natural (abs (Sx (Plotter, X1) - Sx (Plotter, X0)));
+      Height  : constant Natural :=
+        Natural (abs (Sy (Plotter, Y1) - Sy (Plotter, Y0)));
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
 
       Context.Begin_Path;
       Context.Rectangle (Rectangle => [X, Y, Width, Height]);
@@ -681,20 +695,21 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------
 
    overriding procedure Arc
-     (P : in out Canvas_Type; X0, Y0, Radius, Start_Angle, End_Angle : Float;
-      Color :        String)
+     (Plotter                                : in out Canvas_Type;
+      X0, Y0, Radius, Start_Angle, End_Angle :        Float; Color : String)
    is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
 
       Context.Begin_Path;
       Context.Stroke_Color (UXS (Color));
       Context.Line_Width (1);
-      --  Context.Move_To (Sx (P, X0), Sy (P, Y0));
+      --  Context.Move_To (Sx (Plotter, X0), Sy (Plotter, Y0));
       Context.Arc_Degrees
-        (Sx (P, X0), Sy (P, Y0), Sx (P, Radius) - Sx (P, 0.0),
-         360.0 - Start_Angle, 360.0 - End_Angle);
+        (Sx (Plotter, X0), Sy (Plotter, Y0),
+         Sx (Plotter, Radius) - Sx (Plotter, 0.0), 360.0 - Start_Angle,
+         360.0 - End_Angle);
       Context.Stroke;
    end Arc;
 
@@ -703,11 +718,11 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------
 
    overriding procedure Font
-     (P : in out Canvas_Type; Font : String; Height : String)
+     (Plotter : in out Canvas_Type; Font : String; Height : String)
    is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
+      Get_Context (Context, Plotter);
       Context.Font (UXS (Font), UXS (Height));
    end Font;
 
@@ -715,7 +730,9 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Text_Align --
    ----------------
 
-   overriding procedure Text_Align (P : in out Canvas_Type; Align : String) is
+   overriding procedure Text_Align
+     (Plotter : in out Canvas_Type; Align : String)
+   is
    begin
       null;
    end Text_Align;
@@ -725,7 +742,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -------------------
 
    overriding procedure Text_Baseline
-     (P : in out Canvas_Type; Baseline : String)
+     (Plotter : in out Canvas_Type; Baseline : String)
    is
    begin
       null;
@@ -736,21 +753,22 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------
 
    overriding procedure Text
-     (P : in out Canvas_Type; X, Y : Float; Text : String)
+     (Plotter : in out Canvas_Type; X, Y : Float; Text : String)
    is
       Context : Context_2D_Type;
    begin
-      Get_Context (Context, P);
-      Context.Fill_Text (UXS (Text), Sx (P, X), Sy (P, Y));
+      Get_Context (Context, Plotter);
+      Context.Fill_Text (UXS (Text), Sx (Plotter, X), Sy (Plotter, Y));
    end Text;
 
    ------------
    -- Answer --
    ------------
 
-   overriding procedure Answer (P : in out Canvas_Type; Answer : String) is
+   overriding procedure Answer (Plotter : in out Canvas_Type; Answer : String)
+   is
    begin
-      P.Answer_Callback.all (P.App_Data, Answer);
+      Plotter.Answer_Callback.all (Plotter.App_Data, Answer);
    end Answer;
 
 end Project_Euler.GUI.Plotters.Canvas;

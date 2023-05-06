@@ -10,21 +10,15 @@ with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.View;
 with Gnoga.Types;
 
-with Project_Euler.GUI.Runners.Gnoga;
-use Project_Euler.GUI.Runners.Gnoga;
+with Project_Euler.GUI.Runners.Gnoga; use Project_Euler.GUI.Runners.Gnoga;
 
 package Project_Euler.GUI.Plotters.Canvas is
 
    type Canvas_Type is limited new Plotter_Interface with private;
 
-   type Canvas_Name is (Back, Draw, Info);
-
-   function Canvas
-     (P : Canvas_Type; Name : Canvas_Name)
-      return Gnoga.Gui.Element.Canvas.Canvas_Access;
-
    procedure Create
-     (P : in out Canvas_Type; View : Gnoga.Gui.View.Pointer_To_View_Base_Class;
+     (Plotter         : in out Canvas_Type;
+      View            :        Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Pause_Callback  :        not null Runner_Control_Callback;
       Stop_Callback   :        not null Runner_Control_Callback;
       Answer_Callback :        not null Runner_Answer_Callback;
@@ -32,73 +26,82 @@ package Project_Euler.GUI.Plotters.Canvas is
 
    --  Plotter_Control_IFace
 
-   overriding procedure Start (P : in out Canvas_Type);
+   overriding procedure Start (Plotter : in out Canvas_Type);
 
-   overriding procedure Pause (P : in out Canvas_Type);
+   overriding procedure Pause (Plotter : in out Canvas_Type);
 
-   overriding procedure Stop (P : in out Canvas_Type);
+   overriding procedure Stop (Plotter : in out Canvas_Type);
 
    --  Plotter_Drawing_IFace
 
-   overriding procedure Clear_Plot (P : in out Canvas_Type);
+   overriding procedure Clear_Plot (Plotter : in out Canvas_Type);
 
-   overriding procedure Set_Layer_Normal (P : in out Canvas_Type);
+   overriding procedure Set_Layer_Drawing (Plotter : in out Canvas_Type);
 
-   overriding procedure Set_Layer_Info (P : in out Canvas_Type);
-
-   overriding procedure Set_Axes (P : in out Canvas_Type; Min, Max : Float);
+   overriding procedure Set_Layer_Information (Plotter : in out Canvas_Type);
 
    overriding procedure Set_Axes
-     (P : in out Canvas_Type; X_Min, X_Max, Y_Min, Y_Max : Float);
+     (Plotter : in out Canvas_Type; Min, Max : Float);
+
+   overriding procedure Set_Axes
+     (Plotter : in out Canvas_Type; X_Min, X_Max, Y_Min, Y_Max : Float);
 
    overriding procedure Draw_Grid
-     (P : in out Canvas_Type; X_Major, X_Minor, Y_Major, Y_Minor : Float);
+     (Plotter                            : in out Canvas_Type;
+      X_Major, X_Minor, Y_Major, Y_Minor :        Float);
 
    overriding procedure Draw_Axes
-     (P : in out Canvas_Type; X_Label, Y_Label : String);
+     (Plotter : in out Canvas_Type; X_Label, Y_Label : String);
 
-   overriding procedure Draw_Axes_Rectangle (P : in out Canvas_Type);
+   overriding procedure Draw_Axes_Rectangle (Plotter : in out Canvas_Type);
 
    overriding procedure Plot
-     (P : in out Canvas_Type; Points : Point_List; Color : String);
+     (Plotter : in out Canvas_Type; Points : Point_List; Color : String);
 
-   overriding procedure Line_Width (P : in out Canvas_Type; Width : Natural);
+   overriding procedure Line_Width
+     (Plotter : in out Canvas_Type; Width : Natural);
 
    overriding procedure Line_Dash
-     (P : in out Canvas_Type; Length : Natural; Gap : Natural);
+     (Plotter : in out Canvas_Type; Length : Natural; Gap : Natural);
 
-   overriding procedure Stroke_color (P : in out Canvas_Type; Color : String);
+   overriding procedure Stroke_Color
+     (Plotter : in out Canvas_Type; Color : String);
 
-   overriding procedure Fill_Color (P : in out Canvas_Type; Color : String);
+   overriding procedure Fill_Color
+     (Plotter : in out Canvas_Type; Color : String);
 
-   overriding procedure Line (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
+   overriding procedure Line
+     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
 
    overriding procedure Rectangle
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
+     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
 
    overriding procedure Fill_Rectangle
-     (P : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
+     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float);
 
    overriding procedure Arc
-     (P : in out Canvas_Type; X0, Y0, Radius, Start_Angle, End_Angle : Float;
-      Color :        String);
+     (Plotter                                : in out Canvas_Type;
+      X0, Y0, Radius, Start_Angle, End_Angle :        Float; Color : String);
 
    overriding procedure Font
-     (P : in out Canvas_Type; Font : String; Height : String);
+     (Plotter : in out Canvas_Type; Font : String; Height : String);
 
-   overriding procedure Text_Align (P : in out Canvas_Type; Align : String);
+   overriding procedure Text_Align
+     (Plotter : in out Canvas_Type; Align : String);
 
    overriding procedure Text_Baseline
-     (P : in out Canvas_Type; Baseline : String);
+     (Plotter : in out Canvas_Type; Baseline : String);
 
    overriding procedure Text
-     (P : in out Canvas_Type; X, Y : Float; Text : String);
+     (Plotter : in out Canvas_Type; X, Y : Float; Text : String);
 
-   overriding procedure Answer (P : in out Canvas_Type; Answer : String);
+   overriding procedure Answer (Plotter : in out Canvas_Type; Answer : String);
    --  Tells the plotter to show the answer: optionally, it can show
    --  whether the answer is good or wrong, if solution is known.
 
 private
+
+   type Layer_Name is (Back, Draw, Info);
 
    type Axis_Type is record
       Min       : Float;   -- math x min
@@ -109,9 +112,10 @@ private
    end record;
 
    type Canvas_Type is limited new Plotter_Interface with record
-      Back            : Gnoga.Gui.Element.Canvas.Canvas_Type;
-      Draw            : Gnoga.Gui.Element.Canvas.Canvas_Type;
-      Info            : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Background      : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Drawing         : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Information     : Gnoga.Gui.Element.Canvas.Canvas_Type;
+      Current_Layer   : Layer_Name                                   := Draw;
       Pause_Callback  : Runner_Control_Callback                      := null;
       Stop_Callback   : Runner_Control_Callback                      := null;
       Answer_Callback : Runner_Answer_Callback                       := null;
