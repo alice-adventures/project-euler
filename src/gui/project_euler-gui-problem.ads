@@ -6,15 +6,12 @@
 --
 -------------------------------------------------------------------------------
 
-with Project_Euler.CLI.Problem; use Project_Euler.CLI.Problem;
-with Project_Euler.GUI.Plotter; use Project_Euler.GUI.Plotter;
-
-with Parse_Args;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Project_Euler.CLI.Problems;
+with Project_Euler.GUI.Plotter;
 
 package Project_Euler.GUI.Problem is
 
-   type GUI_Problem_Task is task interface and CLI_Problem_Type;
+   type GUI_Problem_Task is task interface and CLI.Problems.Problem_Interface;
 
    type Pointer_To_GUI_Problem_Class is access all GUI_Problem_Task'Class;
 
@@ -23,7 +20,7 @@ package Project_Euler.GUI.Problem is
 
    --!pp off
    procedure Initialize (Problem : GUI_Problem_Task;
-                         Plotter : not null Pointer_To_Plotter_Class)
+                         Plotter : not null GUI.Plotter.Pointer_To_Plotter_Class)
                          is abstract;
    procedure Start      (Problem : GUI_Problem_Task) is abstract;
    procedure Continue   (Problem : GUI_Problem_Task) is abstract;

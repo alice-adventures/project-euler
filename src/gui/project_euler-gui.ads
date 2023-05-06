@@ -7,5 +7,7 @@
 -------------------------------------------------------------------------------
 
 package Project_Euler.GUI is
+
 --  empty
+
 end Project_Euler.GUI;
