@@ -13,10 +13,10 @@ package Project_Euler.GUI.Problems is
 
    type Problem_Task is task interface and CLI.Problems.Problem_Interface;
 
-   type Pointer_To_GUI_Problem_Class is access all Problem_Task'Class;
+   type Pointer_To_Problem_Class is access all Problem_Task'Class;
 
    type Pointer_To_Problem_Factory_Function is
-     access function return Pointer_To_GUI_Problem_Class;
+     access function return Pointer_To_Problem_Class;
 
    --!pp off
    procedure Initialize (

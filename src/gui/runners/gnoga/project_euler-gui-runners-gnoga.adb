@@ -42,7 +42,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
       Button_Bar   : Button_Bar_Type;
       Panel_Answer : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Plotter      : aliased Canvas_Type;
-      Problem      : Pointer_To_GUI_Problem_Class := null;
+      Problem      : Pointer_To_Problem_Class := null;
    end record;
    type App_Access is access all App_Data_Type;
 
