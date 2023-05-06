@@ -15,7 +15,7 @@ with UXStrings;
 use Gnoga.Gui.Element.Canvas;
 use Gnoga.Gui.Element.Canvas.Context_2D;
 
-package body Project_Euler.GUI.Plotter.Canvas is
+package body Project_Euler.GUI.Plotters.Canvas is
 
    Current_Canvas : Canvas_Name := Draw;
 
@@ -753,4 +753,4 @@ package body Project_Euler.GUI.Plotter.Canvas is
       P.Answer_Callback.all (P.App_Data, Answer);
    end Answer;
 
-end Project_Euler.GUI.Plotter.Canvas;
+end Project_Euler.GUI.Plotters.Canvas;

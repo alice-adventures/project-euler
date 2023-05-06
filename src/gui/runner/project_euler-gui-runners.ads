@@ -6,16 +6,16 @@
 --
 -------------------------------------------------------------------------------
 
-with Project_Euler.GUI.Problem; use Project_Euler.GUI.Problem;
+limited with Project_Euler.GUI.Problems;
 
-package Project_Euler.GUI.Runner is
+package Project_Euler.GUI.Runners is
 
-   type GUI_Runner_Type is interface;
+   type Runner_Type is interface;
 
    procedure Run
-     (Runner  : GUI_Runner_Type;
-      Factory : Pointer_To_Problem_Factory_Function) is abstract;
+     (Runner  : Runner_Type;
+      Factory : Problems.Pointer_To_Problem_Factory_Function) is abstract;
    --  Main entry point of a program that interacts with a Problem that
    --  implements the GUI.
 
-end Project_Euler.GUI.Runner;
+end Project_Euler.GUI.Runners;

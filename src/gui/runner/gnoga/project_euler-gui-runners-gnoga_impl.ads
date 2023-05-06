@@ -6,14 +6,14 @@
 --
 -------------------------------------------------------------------------------
 
-with Project_Euler.GUI.Runner;  use Project_Euler.GUI.Runner;
-with Project_Euler.GUI.Problem; use Project_Euler.GUI.Problem;
+with Project_Euler.GUI.Runners;  use Project_Euler.GUI.Runners;
+with Project_Euler.GUI.Problems; use Project_Euler.GUI.Problems;
 
 with Gnoga.Types;
 
-package Project_Euler.GUI.Runner.Gnoga_Impl is
+package Project_Euler.GUI.Runners.Gnoga_Impl is
 
-   type Gnoga_Runner_Type is new GUI_Runner_Type with null record;
+   type Gnoga_Runner_Type is new Runner_Type with null record;
    --  Implementation of the GUI.Runner interface using Gnoga.
 
    overriding procedure Run
@@ -33,4 +33,4 @@ package Project_Euler.GUI.Runner.Gnoga_Impl is
         Answer   : String);
    --  Callback used by the Plotter when the Problem sets the Answer.
 
-end Project_Euler.GUI.Runner.Gnoga_Impl;
+end Project_Euler.GUI.Runners.Gnoga_Impl;

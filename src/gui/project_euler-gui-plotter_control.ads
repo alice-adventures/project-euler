@@ -12,17 +12,17 @@ package Project_Euler.GUI.Plotter_Control is
    --  GUI_Problem_Type can invoke in other to control the Plotter. Please
    --  refer to the documentation for more information.
 
-   type Plotter_Control_IFace is limited interface;
+   type Control_Interface is limited interface;
 
-   procedure Start (Plotter : in out Plotter_Control_IFace) is abstract;
+   procedure Start (Plotter : in out Control_Interface) is abstract;
    --  Informs the Plotter that the computation starts: usually clears the
    --  plot and answer area.
 
-   procedure Pause (Plotter : in out Plotter_Control_IFace) is abstract;
+   procedure Pause (Plotter : in out Control_Interface) is abstract;
    --  Informs the Plotter that the computation is paused: adjusts the
    --  graphical interface so that the user can understand what's going on.
 
-   procedure Stop (Plotter : in out Plotter_Control_IFace) is abstract;
+   procedure Stop (Plotter : in out Control_Interface) is abstract;
    --  Informs the Plotter that the computation has ben stopped: adjusts the
    --  graphical interface so that the user can understand what's going on.
 
