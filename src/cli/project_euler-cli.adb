@@ -14,8 +14,11 @@ with Parse_Args;     use Parse_Args;
 with Simple_Logging; use Simple_Logging;
 
 with Project_Euler_Config; use Project_Euler_Config;
+with Project_Euler.CLI.Problems;
 
-package body Project_Euler.CLI.Runner is
+package body Project_Euler.CLI is
+
+   package Log renames Simple_Logging;
 
    Indent    : constant String  := "   ";
    Par_Width : constant Natural := 80;
@@ -43,14 +46,14 @@ package body Project_Euler.CLI.Runner is
       return Text;
    end Fill_Paragraph;
 
-   procedure Run (Problem : in out CLI_Problem_Type'Class) is
+   procedure Run (Problem : in out Problems.Problem_Interface'Class) is
       Parser : Parse_Args.Argument_Parser;
    begin
       pragma Warnings (Off);
       if Project_Euler_Config.Build_Profile = development then
-         Simple_Logging.Level := Simple_Logging.Debug;
+         Log.Level := Log.Debug;
       else
-         Simple_Logging.Level := Simple_Logging.Info;
+         Log.Level := Log.Info;
       end if;
       pragma Warnings (On);
 
@@ -77,7 +80,7 @@ package body Project_Euler.CLI.Runner is
             Parser.Usage;
             return;
          else
-            Parse_Options (Problem, Parser);
+            Problem.Parse_Options (Parser);
          end if;
       else
          Put_Line
@@ -127,4 +130,4 @@ package body Project_Euler.CLI.Runner is
       end;
    end Run;
 
-end Project_Euler.CLI.Runner;
+end Project_Euler.CLI;

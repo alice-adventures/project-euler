@@ -6,6 +6,11 @@
 --
 -------------------------------------------------------------------------------
 
+limited with Project_Euler.CLI.Problems;
+
 package Project_Euler.CLI is
---  empty
+
+   procedure Run (Problem : in out Problems.Problem_Interface'Class);
+   --  Run the given problem.
+
 end Project_Euler.CLI;

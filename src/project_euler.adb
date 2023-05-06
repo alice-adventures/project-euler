@@ -22,7 +22,10 @@ package body Project_Euler is
       --  * md5sum of the string "<PROBLEM_NUMBER>.<PROBLEM_ANSWER>", with  *
       --  * no quotes and no end-of-line characters ('\n', '\r\n') added by *
       --  * CLI 'echo' commands.                                            *
-      --  * Example: echo -n <PROBLEM_NUMBER>.<PROBBLEM_ANSWER> | md5sum    *
+      --  * Also, remember to trim leading and trailing white spaces of the *
+      --  * string <PROBLEM_ANSWER>.                                        *
+      --  *                                                                 *
+      --  * Example: echo -n <PROBLEM_NUMBER>.<PROBLEM_ANSWER> | md5sum     *
 
       Digest : constant String :=
         GNAT.MD5.Digest
