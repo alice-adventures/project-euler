@@ -17,45 +17,43 @@ with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Window;
 with UXStrings;
 
-use all type Gnoga.Gui.View.Grid.Grid_Element_Type;
+use all type Standard.Gnoga.String;
+use all type Standard.Gnoga.Gui.View.Grid.Grid_Element_Type;
 
-with Project_Euler.GUI.Problems;        use Project_Euler.GUI.Problems;
 with Project_Euler.GUI.Plotters.Canvas; use Project_Euler.GUI.Plotters.Canvas;
 
-use all type Gnoga.String;
+package body Project_Euler.GUI.Runners.Gnoga is
 
-package body Project_Euler.GUI.Runners.Gnoga_Impl is
-
-   Window_Layout : constant Gnoga.Gui.View.Grid.Grid_Rows_Type :=
+   Window_Layout : constant The_Gnoga.Gui.View.Grid.Grid_Rows_Type :=
      [1 => [COL, COL, COL], 2 => [COL, COL, COL], 3 => [COL, COL, COL]];
 
    type Button_Bar_Type is record
-      Panel    : Gnoga.Gui.View.Pointer_To_View_Base_Class;
-      Start    : Gnoga.Gui.Element.Common.Button_Type;
-      --  Step     : Gnoga.Gui.Element.Common.Button_Type;
-      Continue : Gnoga.Gui.Element.Common.Button_Type;
-      Stop     : Gnoga.Gui.Element.Common.Button_Type;
+      Panel    : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
+      Start    : The_Gnoga.Gui.Element.Common.Button_Type;
+      --  Step     : The_Gnoga.Gui.Element.Common.Button_Type;
+      Continue : The_Gnoga.Gui.Element.Common.Button_Type;
+      Stop     : The_Gnoga.Gui.Element.Common.Button_Type;
    end record;
 
-   type App_Data_Type is new Gnoga.Types.Connection_Data_Type with record
-      Grid         : Gnoga.Gui.View.Grid.Grid_View_Type;
-      Panel_Alice  : Gnoga.Gui.View.Pointer_To_View_Base_Class;
-      Panel_Title  : Gnoga.Gui.View.Pointer_To_View_Base_Class;
+   type App_Data_Type is new The_Gnoga.Types.Connection_Data_Type with record
+      Grid         : The_Gnoga.Gui.View.Grid.Grid_View_Type;
+      Panel_Alice  : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
+      Panel_Title  : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Button_Bar   : Button_Bar_Type;
-      Panel_Answer : Gnoga.Gui.View.Pointer_To_View_Base_Class;
+      Panel_Answer : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Plotter      : aliased Canvas_Type;
       Problem      : Pointer_To_GUI_Problem_Class := null;
    end record;
    type App_Access is access all App_Data_Type;
 
    procedure Button_Start_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+     (Object : in out The_Gnoga.Gui.Base.Base_Type'Class);
    --  procedure Button_Step_On_Click
-   --    (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   --    (Object : in out The_Gnoga.Gui.Base.Base_Type'Class);
    procedure Button_Continue_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+     (Object : in out The_Gnoga.Gui.Base.Base_Type'Class);
    procedure Button_Stop_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+     (Object : in out The_Gnoga.Gui.Base.Base_Type'Class);
 
    Problem_Factory :
      Project_Euler.GUI.Problems.Pointer_To_Problem_Factory_Function :=
@@ -81,7 +79,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    ---------------------------
 
    procedure Button_Start_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+     (Object : in out The_Gnoga.Gui.Base.Base_Type'Class)
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
@@ -99,7 +97,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    --------------------
 
    procedure Pause_Callback
-     (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class)
+     (App_Data : not null The_Gnoga.Types.Pointer_to_Connection_Data_Class)
    is
       App : constant App_Access := App_Access (App_Data);
    begin
@@ -109,7 +107,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    end Pause_Callback;
 
    --  procedure Button_Step_On_Click
-   --    (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+   --    (Object : in out The_Gnoga.Gui.Base.Base_Type'Class)
    --  is
    --  begin
    --     Pause_Callback (Object.Connection_Data);
@@ -120,7 +118,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    ------------------------------
 
    procedure Button_Continue_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+     (Object : in out The_Gnoga.Gui.Base.Base_Type'Class)
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
@@ -134,7 +132,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    -------------------
 
    procedure Stop_Callback
-     (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class)
+     (App_Data : not null The_Gnoga.Types.Pointer_to_Connection_Data_Class)
    is
       App : constant App_Access := App_Access (App_Data);
    begin
@@ -153,7 +151,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    --------------------------
 
    procedure Button_Stop_On_Click
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
+     (Object : in out The_Gnoga.Gui.Base.Base_Type'Class)
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
@@ -162,7 +160,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    end Button_Stop_On_Click;
 
    procedure Answer_Callback
-     (App_Data : not null Gnoga.Types.Pointer_to_Connection_Data_Class;
+     (App_Data : not null The_Gnoga.Types.Pointer_to_Connection_Data_Class;
       Answer   : String)
    is
       App : constant App_Access := App_Access (App_Data);
@@ -177,7 +175,7 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
       declare
          Correct        : Boolean;
          Known_Solution : Boolean;
-         Check : constant Gnoga.Gui.Element.Pointer_To_Element_Class :=
+         Check : constant The_Gnoga.Gui.Element.Pointer_To_Element_Class :=
            App.Panel_Answer.Element ("answer-check");
       begin
          Correct :=
@@ -206,8 +204,8 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    --------------------
 
    procedure On_App_Connect
-     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
+     (Main_Window : in out The_Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access The_Gnoga.Application.Multi_Connect
         .Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
@@ -215,8 +213,8 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
    begin
 
       Main_Window.Connection_Data (App);
-      App.Problem := Project_Euler.GUI.Runners.Gnoga_Impl.Problem_Factory.all;
-      Gnoga.Application.Title (UXS (App.Problem.Title));
+      App.Problem := Project_Euler.GUI.Runners.Gnoga.Problem_Factory.all;
+      The_Gnoga.Application.Title (UXS (App.Problem.Title));
 
       App.Grid.Create
         (Parent => Main_Window, Layout => Window_Layout, Fill_Parent => True,
@@ -235,7 +233,8 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
         (UXS ("<p class=""fs-4"">" & App.Problem.Brief & "</p>"));
       App.Panel_Title.Put_HTML
         (UXS
-           ("<i class=""fs-5"">See <a target=""_new"" href=""https://projecteuler.net/problem=") &
+           ("<i class=""fs-5"">See <a target=""_new"" " &
+            "href=""https://projecteuler.net/problem=") &
          UXS (App.Problem.Number) & UXS (""">complete description.</a></i>"));
       App.Panel_Title.Horizontal_Rule;
 
@@ -280,12 +279,15 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
       App.Panel_Answer.Class_Name ("answer");
 
       declare
-         Answer_Title : Gnoga.Gui.Element.Pointer_To_Element_Class :=
-           new Gnoga.Gui.Element.Element_Type;
-         Answer_Value : Gnoga.Gui.Element.Pointer_To_Element_Class :=
-           new Gnoga.Gui.Element.Element_Type;
-         Answer_Check : Gnoga.Gui.Element.Pointer_To_Element_Class :=
-           new Gnoga.Gui.Element.Element_Type;
+         Answer_Title :
+           constant The_Gnoga.Gui.Element.Pointer_To_Element_Class :=
+           new The_Gnoga.Gui.Element.Element_Type;
+         Answer_Value :
+           constant The_Gnoga.Gui.Element.Pointer_To_Element_Class :=
+           new The_Gnoga.Gui.Element.Element_Type;
+         Answer_Check :
+           constant The_Gnoga.Gui.Element.Pointer_To_Element_Class :=
+           new The_Gnoga.Gui.Element.Element_Type;
       begin
          Answer_Title.Create_From_HTML
            (App.Panel_Answer.all, "<div><h3>Answer:</h3></div>",
@@ -322,15 +324,15 @@ package body Project_Euler.GUI.Runners.Gnoga_Impl is
         .Pointer_To_Problem_Factory_Function)
    is
    begin
-      Project_Euler.GUI.Runners.Gnoga_Impl.Problem_Factory := Problem_Factory;
+      Project_Euler.GUI.Runners.Gnoga.Problem_Factory := Problem_Factory;
 
-      Gnoga.Application.HTML_On_Close
+      The_Gnoga.Application.HTML_On_Close
         ("<h3 style='margin:50px;'>Application closed.<h3>");
 
-      Gnoga.Application.Multi_Connect.Initialize
+      The_Gnoga.Application.Multi_Connect.Initialize
         (Event => On_App_Connect'Unrestricted_Access, Host => "0.0.0.0");
 
-      Gnoga.Application.Multi_Connect.Message_Loop;
+      The_Gnoga.Application.Multi_Connect.Message_Loop;
    end Run;
 
-end Project_Euler.GUI.Runners.Gnoga_Impl;
+end Project_Euler.GUI.Runners.Gnoga;

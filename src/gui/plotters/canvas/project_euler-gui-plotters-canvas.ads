@@ -10,8 +10,8 @@ with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.View;
 with Gnoga.Types;
 
-with Project_Euler.GUI.Runners.Gnoga_Impl;
-use Project_Euler.GUI.Runners.Gnoga_Impl;
+with Project_Euler.GUI.Runners.Gnoga;
+use Project_Euler.GUI.Runners.Gnoga;
 
 package Project_Euler.GUI.Plotters.Canvas is
 
