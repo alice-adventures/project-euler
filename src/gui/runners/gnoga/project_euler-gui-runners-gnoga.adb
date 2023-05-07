@@ -41,7 +41,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
       Panel_Title  : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Button_Bar   : Button_Bar_Type;
       Panel_Answer : The_Gnoga.Gui.View.Pointer_To_View_Base_Class;
-      Plotter      : aliased Canvas_Type;
+      Plotter      : aliased Plotter_Canvas_Type;
       Problem      : Pointer_To_Problem_Task := null;
    end record;
    type App_Access is access all App_Data_Type;
@@ -318,7 +318,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
    ---------
 
    overriding procedure Run
-     (Runner          : Gnoga_Runner_Type;
+     (Runner          : Runner_Gnoga_Type;
       Problem_Factory : Project_Euler.GUI.Problems.Pointer_To_Problem_Factory)
    is
    begin

@@ -13,12 +13,14 @@ with Gnoga.Types;
 package Project_Euler.GUI.Runners.Gnoga is
 
    package The_Gnoga renames Standard.Gnoga; --  The GNU Omnificent GUI for Ada
+   --  This renaming is necessary to avoid confusion with the current
+   --  package, named Gnoga too.
 
-   type Gnoga_Runner_Type is new Runner_Type with null record;
+   type Runner_Gnoga_Type is new Runner_Type with null record;
    --  Implementation of the GUI.Runner interface using Gnoga.
 
    overriding procedure Run
-     (Runner          : Gnoga_Runner_Type;
+     (Runner          : Runner_Gnoga_Type;
       Problem_Factory : Pointer_To_Problem_Factory);
    --  Main procedure to run the Problem.
 

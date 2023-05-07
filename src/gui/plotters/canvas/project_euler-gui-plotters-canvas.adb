@@ -34,7 +34,8 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -----------------
 
    procedure Get_Context
-     (Context : in out Context_2D_Type; Plotter : in out Canvas_Type) with
+     (Context : in out Context_2D_Type;
+      Plotter : in out Plotter_Canvas_Type) with
      Inline
    is
    begin
@@ -49,7 +50,8 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Screen_X --
    --------------
 
-   function Screen_X (Plotter : in out Canvas_Type; Px : Float) return Natural
+   function Screen_X
+     (Plotter : in out Plotter_Canvas_Type; Px : Float) return Natural
    is
       Sx : constant Float :=
         (Px - Plotter.X.Min) / (Plotter.X.Max - Plotter.X.Min);
@@ -67,14 +69,15 @@ package body Project_Euler.GUI.Plotters.Canvas is
    --------
 
    function Sx
-     (Plotter : in out Canvas_Type; Px : Float) return Natural renames
+     (Plotter : in out Plotter_Canvas_Type; Px : Float) return Natural renames
      Screen_X;
 
    --------------
    -- Screen_Y --
    --------------
 
-   function Screen_Y (Plotter : in out Canvas_Type; Py : Float) return Natural
+   function Screen_Y
+     (Plotter : in out Plotter_Canvas_Type; Py : Float) return Natural
    is
       Sy : constant Float :=
         (Py - Plotter.Y.Min) / (Plotter.Y.Max - Plotter.Y.Min);
@@ -92,7 +95,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    --------
 
    function Sy
-     (Plotter : in out Canvas_Type; Py : Float) return Natural renames
+     (Plotter : in out Plotter_Canvas_Type; Py : Float) return Natural renames
      Screen_Y;
 
    ---------
@@ -108,7 +111,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ------------
 
    procedure Create
-     (Plotter         : in out Canvas_Type;
+     (Plotter         : in out Plotter_Canvas_Type;
       View            :        Gnoga.Gui.View.Pointer_To_View_Base_Class;
       Pause_Callback  :        not null Runner_Control_Callback;
       Stop_Callback   :        not null Runner_Control_Callback;
@@ -154,7 +157,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Start --
    -----------
 
-   overriding procedure Start (Plotter : in out Canvas_Type) is
+   overriding procedure Start (Plotter : in out Plotter_Canvas_Type) is
    begin
       Plotter.Current_Layer := Info;
       Plotter.Clear_Plot;
@@ -166,7 +169,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Pause --
    -----------
 
-   overriding procedure Pause (Plotter : in out Canvas_Type) is
+   overriding procedure Pause (Plotter : in out Plotter_Canvas_Type) is
    begin
       Plotter.Pause_Callback.all (Plotter.App_Data);
    end Pause;
@@ -175,7 +178,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Stop --
    ----------
 
-   overriding procedure Stop (Plotter : in out Canvas_Type) is
+   overriding procedure Stop (Plotter : in out Plotter_Canvas_Type) is
    begin
       Plotter.Stop_Callback.all (Plotter.App_Data);
    end Stop;
@@ -184,7 +187,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Clear_Plot --
    ----------------
 
-   overriding procedure Clear_Plot (Plotter : in out Canvas_Type) is
+   overriding procedure Clear_Plot (Plotter : in out Plotter_Canvas_Type) is
       Context : Context_2D_Type;
    begin
       Get_Context (Context, Plotter);
@@ -198,7 +201,9 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Set_Layer_Drawing --
    -----------------------
 
-   overriding procedure Set_Layer_Drawing (Plotter : in out Canvas_Type) is
+   overriding procedure Set_Layer_Drawing
+     (Plotter : in out Plotter_Canvas_Type)
+   is
    begin
       Plotter.Current_Layer := Draw;
    end Set_Layer_Drawing;
@@ -207,7 +212,9 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Set_Layer_Information --
    ---------------------------
 
-   overriding procedure Set_Layer_Information (Plotter : in out Canvas_Type) is
+   overriding procedure Set_Layer_Information
+     (Plotter : in out Plotter_Canvas_Type)
+   is
    begin
       Plotter.Current_Layer := Info;
    end Set_Layer_Information;
@@ -217,7 +224,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    --------------
 
    overriding procedure Set_Axes
-     (Plotter : in out Canvas_Type; Min, Max : Float)
+     (Plotter : in out Plotter_Canvas_Type; Min, Max : Float)
    is
       Margin_Ratio : constant Natural := 5; -- in %
       Margin       : constant Natural :=
@@ -255,7 +262,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    --------------
 
    overriding procedure Set_Axes
-     (Plotter : in out Canvas_Type; X_Min, X_Max, Y_Min, Y_Max : Float)
+     (Plotter : in out Plotter_Canvas_Type; X_Min, X_Max, Y_Min, Y_Max : Float)
    is
       Margin_Ratio : constant Natural := 5; -- in %
       Margin       : constant Natural :=
@@ -278,7 +285,8 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Draw_Grid
-     (Plotter : in out Canvas_Type; X_Major, X_Minor, Y_Major, Y_Minor : Float)
+     (Plotter                            : in out Plotter_Canvas_Type;
+      X_Major, X_Minor, Y_Major, Y_Minor :        Float)
    is
       subtype Label_Type is String (1 .. 12);
 
@@ -487,7 +495,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Draw_Axes
-     (Plotter : in out Canvas_Type; X_Label, Y_Label : String)
+     (Plotter : in out Plotter_Canvas_Type; X_Label, Y_Label : String)
    is
       Context : Context_2D_Type;
       Length  : Natural;
@@ -528,11 +536,13 @@ package body Project_Euler.GUI.Plotters.Canvas is
       Context.Stroke;
    end Draw_Axes;
 
-   ----------------------
-   -- Draw_Axes_Square --
-   ----------------------
+   -------------------------
+   -- Draw_Axes_Rectangle --
+   -------------------------
 
-   overriding procedure Draw_Axes_Rectangle (Plotter : in out Canvas_Type) is
+   overriding procedure Draw_Axes_Rectangle
+     (Plotter : in out Plotter_Canvas_Type)
+   is
       Context : Context_2D_Type;
       X_Min   : constant Float := Plotter.X.Min;
       Y_Min   : constant Float := Plotter.Y.Min;
@@ -557,7 +567,8 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------
 
    overriding procedure Plot
-     (Plotter : in out Canvas_Type; Points : Point_List; Color : String)
+     (Plotter : in out Plotter_Canvas_Type; Points : Point_List;
+      Color   :        String)
    is
       Context : Context_2D_Type;
       Point   : Math_Point;
@@ -582,7 +593,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------------
 
    overriding procedure Line_Width
-     (Plotter : in out Canvas_Type; Width : Natural)
+     (Plotter : in out Plotter_Canvas_Type; Width : Natural)
    is
       Context : Context_2D_Type;
    begin
@@ -595,7 +606,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Line_Dash
-     (Plotter : in out Canvas_Type; Length : Natural; Gap : Natural)
+     (Plotter : in out Plotter_Canvas_Type; Length : Natural; Gap : Natural)
    is
       Context : Context_2D_Type;
    begin
@@ -608,7 +619,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ------------------
 
    overriding procedure Stroke_Color
-     (Plotter : in out Canvas_Type; Color : String)
+     (Plotter : in out Plotter_Canvas_Type; Color : String)
    is
       Context : Context_2D_Type;
    begin
@@ -621,7 +632,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------------
 
    overriding procedure Fill_Color
-     (Plotter : in out Canvas_Type; Color : String)
+     (Plotter : in out Plotter_Canvas_Type; Color : String)
    is
       Context : Context_2D_Type;
    begin
@@ -634,7 +645,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------
 
    overriding procedure Line
-     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
+     (Plotter : in out Plotter_Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
    begin
@@ -651,7 +662,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------------
 
    overriding procedure Rectangle
-     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
+     (Plotter : in out Plotter_Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
       X : constant Natural := Natural'Min (Sx (Plotter, X0), Sx (Plotter, X1));
@@ -673,7 +684,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    --------------------
 
    overriding procedure Fill_Rectangle
-     (Plotter : in out Canvas_Type; X0, Y0, X1, Y1 : Float)
+     (Plotter : in out Plotter_Canvas_Type; X0, Y0, X1, Y1 : Float)
    is
       Context : Context_2D_Type;
       X : constant Natural := Natural'Min (Sx (Plotter, X0), Sx (Plotter, X1));
@@ -695,7 +706,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ---------
 
    overriding procedure Arc
-     (Plotter                                : in out Canvas_Type;
+     (Plotter                                : in out Plotter_Canvas_Type;
       X0, Y0, Radius, Start_Angle, End_Angle :        Float; Color : String)
    is
       Context : Context_2D_Type;
@@ -718,7 +729,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------
 
    overriding procedure Font
-     (Plotter : in out Canvas_Type; Font : String; Height : String)
+     (Plotter : in out Plotter_Canvas_Type; Font : String; Height : String)
    is
       Context : Context_2D_Type;
    begin
@@ -731,7 +742,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------------
 
    overriding procedure Text_Align
-     (Plotter : in out Canvas_Type; Align : String)
+     (Plotter : in out Plotter_Canvas_Type; Align : String)
    is
    begin
       null;
@@ -742,7 +753,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -------------------
 
    overriding procedure Text_Baseline
-     (Plotter : in out Canvas_Type; Baseline : String)
+     (Plotter : in out Plotter_Canvas_Type; Baseline : String)
    is
    begin
       null;
@@ -753,7 +764,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
    ----------
 
    overriding procedure Text
-     (Plotter : in out Canvas_Type; X, Y : Float; Text : String)
+     (Plotter : in out Plotter_Canvas_Type; X, Y : Float; Text : String)
    is
       Context : Context_2D_Type;
    begin
@@ -765,7 +776,8 @@ package body Project_Euler.GUI.Plotters.Canvas is
    -- Answer --
    ------------
 
-   overriding procedure Answer (Plotter : in out Canvas_Type; Answer : String)
+   overriding procedure Answer
+     (Plotter : in out Plotter_Canvas_Type; Answer : String)
    is
    begin
       Plotter.Answer_Callback.all (Plotter.App_Data, Answer);
