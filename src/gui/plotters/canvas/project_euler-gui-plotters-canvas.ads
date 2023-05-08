@@ -24,7 +24,7 @@ package Project_Euler.GUI.Plotters.Canvas is
       Answer_Callback :        not null Runner_Answer_Callback;
       App_Data        : not null Gnoga.Types.Pointer_to_Connection_Data_Class);
 
-   --  Plotter_Control_IFace
+   --  Plotter_Control_Interface
 
    overriding procedure Start (Plotter : in out Plotter_Canvas_Type);
 
@@ -32,7 +32,7 @@ package Project_Euler.GUI.Plotters.Canvas is
 
    overriding procedure Stop (Plotter : in out Plotter_Canvas_Type);
 
-   --  Plotter_Drawing_IFace
+   --  Plotter_Drawing_Interface
 
    overriding procedure Clear_Plot (Plotter : in out Plotter_Canvas_Type);
 
@@ -102,8 +102,8 @@ package Project_Euler.GUI.Plotters.Canvas is
 
    overriding procedure Answer
      (Plotter : in out Plotter_Canvas_Type; Answer : String);
-   --  Tells the plotter to show the answer: optionally, it can show
-   --  whether the answer is good or wrong, if solution is known.
+   --  Tells the plotter to show the answer: optionally, it can show,  if the
+   --  solution is known, whether it is correct or not.
 
 private
 
