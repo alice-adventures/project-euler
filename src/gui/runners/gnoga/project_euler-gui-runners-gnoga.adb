@@ -328,7 +328,14 @@ package body Project_Euler.GUI.Runners.Gnoga is
       Project_Euler.GUI.Runners.Gnoga.Problem_Factory := Problem_Factory;
 
       The_Gnoga.Application.HTML_On_Close
-        ("<h3 style='margin:50px;'>Application closed.<h3>");
+        ("<div style=""margin:10%;text-align:center"">" & "<img src=" &
+         """https://raw.githubusercontent.com/wiki/alice-adventures/" &
+         "Alice/Alice_Adventures.png"">" & "<br><br>" &
+         "<h2>Application closed</h2>" &
+         "Thank you for participating in Alice.<br>" &
+         "For more information,please visit " &
+         "<a href=""https://github.com/alice-adventures/Alice/wiki"">" &
+         "Alice Wiki</a>" & "</div>");
 
       The_Gnoga.Application.Multi_Connect.Initialize
         (Event => On_App_Connect'Unrestricted_Access, Host => "0.0.0.0");
