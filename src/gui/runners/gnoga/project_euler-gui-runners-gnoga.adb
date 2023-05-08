@@ -44,7 +44,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
       Plotter      : aliased Plotter_Canvas_Type;
       Problem      : Pointer_To_Problem_Task := null;
    end record;
-   type App_Access is access all App_Data_Type;
+   type App_Data_Access is access all App_Data_Type;
 
    procedure Button_Start_On_Click
      (Object : in out The_Gnoga.Gui.Base.Base_Type'Class);
@@ -80,7 +80,8 @@ package body Project_Euler.GUI.Runners.Gnoga is
    procedure Button_Start_On_Click
      (Object : in out The_Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : constant App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Data_Access :=
+        App_Data_Access (Object.Connection_Data);
    begin
       App.Button_Bar.Start.Class_Name ("btn btn-primary");
       App.Button_Bar.Start.Disabled (True);
@@ -98,7 +99,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
    procedure Pause_Callback
      (App_Data : not null The_Gnoga.Types.Pointer_to_Connection_Data_Class)
    is
-      App : constant App_Access := App_Access (App_Data);
+      App : constant App_Data_Access := App_Data_Access (App_Data);
    begin
       --  App.Problem.Step;
       App.Button_Bar.Continue.Class_Name ("btn btn-info");
@@ -119,7 +120,8 @@ package body Project_Euler.GUI.Runners.Gnoga is
    procedure Button_Continue_On_Click
      (Object : in out The_Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : constant App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Data_Access :=
+        App_Data_Access (Object.Connection_Data);
    begin
       App.Button_Bar.Continue.Class_Name ("btn btn-info");
       App.Button_Bar.Continue.Disabled;
@@ -133,7 +135,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
    procedure Stop_Callback
      (App_Data : not null The_Gnoga.Types.Pointer_to_Connection_Data_Class)
    is
-      App : constant App_Access := App_Access (App_Data);
+      App : constant App_Data_Access := App_Data_Access (App_Data);
    begin
       App.Button_Bar.Start.Class_Name ("btn btn-primary");
       App.Button_Bar.Start.Disabled (False);
@@ -152,7 +154,8 @@ package body Project_Euler.GUI.Runners.Gnoga is
    procedure Button_Stop_On_Click
      (Object : in out The_Gnoga.Gui.Base.Base_Type'Class)
    is
-      App : constant App_Access := App_Access (Object.Connection_Data);
+      App : constant App_Data_Access :=
+        App_Data_Access (Object.Connection_Data);
    begin
       App.Problem.Stop;
       Stop_Callback (Object.Connection_Data);
@@ -162,7 +165,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
      (App_Data : not null The_Gnoga.Types.Pointer_to_Connection_Data_Class;
       Answer   : String)
    is
-      App : constant App_Access := App_Access (App_Data);
+      App : constant App_Data_Access := App_Data_Access (App_Data);
    begin
       Text_IO.Put_Line ("-- ANSWER " & Answer);
       Text_IO.Put_Line
@@ -208,7 +211,7 @@ package body Project_Euler.GUI.Runners.Gnoga is
         .Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
-      App : constant App_Access := new App_Data_Type;
+      App : constant App_Data_Access := new App_Data_Type;
    begin
 
       Main_Window.Connection_Data (App);
