@@ -64,7 +64,7 @@ package Project_Euler.GUI.Runners.Gnoga.View is
       "<div style=""margin:10%;text-align:center"">" &
          "<img src=" &
             """https://raw.githubusercontent.com/wiki/alice-adventures/" &
-            "Alice/Alice_Adventures.png"">" &
+            "Alice/Alice_Adventures.png"" width=""25%"">" &
          "<br><br><br>" &
          "<h2>Application closed</h2>" &
          "Thank you for participating in Alice." &
