@@ -39,7 +39,7 @@ package Project_Euler.CLI.Problems is
    --  Parse and collect options specified by users.
 
    function Answer
-     (Problem : in out Problem_Interface; Notes : in out Unbounded_String)
+     (Problem : Problem_Interface; Notes : in out Unbounded_String)
       return String is abstract;
    --  Return a string containing the solution to the problem as it was
    --  entered in the Project Euler web site. Optionally, additional details
