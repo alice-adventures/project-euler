@@ -19,8 +19,12 @@ USR=$(realpath ${CWD}/../usr/)
 if [ -d "$USR" ]; then
     for repo in $(find ${USR} -mindepth 1 -maxdepth 1 -type d); do
         cd $repo >/dev/null 2>&1
-        echo -e "\n-- Updating repository usr/$(basename $repo)"
-        git pull --all --tags --force
+        if [ -d .git ]; then
+            if [ $(git branch --list | wc -l) -gt 0 ]; then
+                echo -e "\n-- Updating repository usr/$(basename $repo)"
+                git pull --all --tags --force
+            fi
+        fi
         cd - >/dev/null 2>&1
     done
 fi

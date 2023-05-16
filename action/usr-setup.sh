@@ -3,6 +3,7 @@
 set -o errexit
 
 CWD=$(dirname $(realpath $0))
+cd $CWD/../
 
 mapfile < <(cat usr/.register)
 for i in ${!MAPFILE[*]}; do
