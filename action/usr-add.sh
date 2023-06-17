@@ -12,10 +12,11 @@ NAME=$(echo -e "$1" | tr -s ' ' | sed 's/^ *//;s/ *$//')
 
 mkdir usr/$NAME
 cd usr/$NAME
-ln -s ../../css .
-ln -s ../../html .
+ln -s ../../assets .
 ln -s ../../share/input .
-ln -s ../../js .
+# ln -s ../../css .
+# ln -s ../../html .
+# ln -s ../../js .
 
 echo
 echo "  Directory user/$NAME successfully created!"

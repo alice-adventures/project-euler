@@ -12,9 +12,9 @@ for i in ${!MAPFILE[*]}; do
     if [ ! -d usr/$NAME ]; then
         git clone $REPO usr/$NAME
         cd usr/$NAME
-        ln -s ../../css .
-        ln -s ../../html .
         ln -s ../../share/input .
-        ln -s ../../js .
+        ln -s ../../assets/gnoga/css .
+        ln -s ../../assets/gnoga/html .
+        ln -s ../../assets/gnoga/js .
     fi;
 done
