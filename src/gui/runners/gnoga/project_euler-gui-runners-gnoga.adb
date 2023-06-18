@@ -31,7 +31,8 @@ package body Project_Euler.GUI.Runners.Gnoga is
       Runners.Gnoga.Problem_Factory := Problem_Factory;
 
       The_Gnoga.Application.Multi_Connect.Initialize
-        (Event => On_App_Connect'Unrestricted_Access, Host => "0.0.0.0");
+        (Event => On_App_Connect'Unrestricted_Access, Host => "127.0.0.1",
+         Port  => 47_800);
 
       The_Gnoga.Application.HTML_On_Close (UXS (Close_App_HTML));
       The_Gnoga.Application.Multi_Connect.Message_Loop;
