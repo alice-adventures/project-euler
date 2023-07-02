@@ -30,7 +30,7 @@ package body Project_Euler is
       Digest : constant String :=
         GNAT.MD5.Digest
           (Ada.Strings.Fixed.Trim (Problem_Number'Image, Ada.Strings.Both) &
-           "." & Problem_Answer);
+           "." & Ada.Strings.Fixed.Trim (Problem_Answer, Ada.Strings.Both));
    begin
       Known_Solution := True;
 
