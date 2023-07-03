@@ -8,8 +8,6 @@
 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with Parse_Args;
-
 package Project_Euler.CLI.Problems is
 
    type Problem_Interface is limited interface;
@@ -26,16 +24,12 @@ package Project_Euler.CLI.Problems is
    --  include a reference to the description or key concepts to provide
    --  additional context.
 
-   procedure Configure_Options
-     (Problem :        Problem_Interface;
-      Parser  : in out Parse_Args.Argument_Parser) is null;
+   procedure Configure_Options (Problem : Problem_Interface) is null;
    --  Allow problems to configure additional options, e.g. to modify
    --  algorithm behavior. Users can specify a particular value at program
    --  invocation.
 
-   procedure Parse_Options
-     (Problem : in out Problem_Interface;
-      Parser  :        Parse_Args.Argument_Parser) is null;
+   procedure Parse_Options (Problem : in out Problem_Interface) is null;
    --  Parse and collect options specified by users.
 
    function Answer

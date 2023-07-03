@@ -23,8 +23,9 @@ package Project_Euler.GUI.Runners.Gnoga is
    --  Implementation of the GUI.Runner interface using Gnoga.
 
    overriding procedure Run
-     (Runner          : Runner_Gnoga_Type;
-      Problem_Factory : Pointer_To_Problem_Factory);
+     (Runner            : Runner_Gnoga_Type;
+      Problem_Factory   : Pointer_To_Problem_Factory;
+      Configure_Options : Pointer_To_Configure_Options);
    --  Main procedure to run the Problem.
 
    type Runner_Control_Callback is

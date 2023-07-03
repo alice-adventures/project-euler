@@ -6,7 +6,11 @@
 --
 -------------------------------------------------------------------------------
 
+with Parse_Args;
+
 package Project_Euler is
+
+   Argument_Parser : Parse_Args.Argument_Parser;
 
    function Check_Solution
      (Problem_Number :     Natural; Problem_Answer : String;

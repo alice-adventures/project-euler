@@ -47,7 +47,6 @@ package body Project_Euler.CLI is
    end Fill_Paragraph;
 
    procedure Run (Problem : in out Problems.Problem_Interface'Class) is
-      Parser : Parse_Args.Argument_Parser;
    begin
       pragma Warnings (Off);
       if Project_Euler_Config.Build_Profile = development then
@@ -57,23 +56,23 @@ package body Project_Euler.CLI is
       end if;
       pragma Warnings (On);
 
-      Parser.Add_Option
+      Argument_Parser.Add_Option
         (Make_Boolean_Option (False), "help", 'h', "help",
          "Display this text");
-      Problem.Configure_Options (Parser);
+      Problem.Configure_Options;
 
-      Parser.Parse_Command_Line;
-      if Parser.Parse_Success then
-         if Parser.Boolean_Value ("help") then
-            Parser.Usage;
+      Argument_Parser.Parse_Command_Line;
+      if Argument_Parser.Parse_Success then
+         if Argument_Parser.Boolean_Value ("help") then
+            Argument_Parser.Usage;
             return;
          else
-            Problem.Parse_Options (Parser);
+            Problem.Parse_Options;
          end if;
       else
          Put_Line
            ("Error while parsing command-line arguments: " &
-            Parser.Parse_Message);
+            Argument_Parser.Parse_Message);
          return;
       end if;
 
