@@ -744,8 +744,26 @@ package body Project_Euler.GUI.Plotters.Canvas is
    overriding procedure Text_Align
      (Plotter : in out Plotter_Canvas_Type; Align : String)
    is
+      Context        : Context_2D_Type;
+      Text_Alignment : Alignment_Type := Left;
    begin
-      null;
+      case Align is
+         when "left" =>
+            Text_Alignment := Left;
+         when "right" =>
+            Text_Alignment := Right;
+         when "center" =>
+            Text_Alignment := Center;
+         when "start" =>
+            Text_Alignment := At_Start;
+         when "end" =>
+            Text_Alignment := To_End;
+         when others =>
+            Text_Alignment := Left;
+      end case;
+
+      Get_Context (Context, Plotter);
+      Context.Text_Alignment (Text_Alignment);
    end Text_Align;
 
    -------------------

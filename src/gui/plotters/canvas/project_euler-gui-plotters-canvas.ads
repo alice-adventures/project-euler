@@ -93,6 +93,7 @@ package Project_Euler.GUI.Plotters.Canvas is
 
    overriding procedure Text_Align
      (Plotter : in out Plotter_Canvas_Type; Align : String);
+   --  Align text to "left", "right", "center", "start" or "end".
 
    overriding procedure Text_Baseline
      (Plotter : in out Plotter_Canvas_Type; Baseline : String);
