@@ -1,5 +1,5 @@
 name = "project_euler"
-version = "0.1.7-dev"
+version = "0.1.8-dev"
 description = "Project Euler support for Alice"
 website = "https://github.com/alice-adventures/Alice/wiki"
 
