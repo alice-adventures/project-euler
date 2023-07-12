@@ -745,7 +745,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
      (Plotter : in out Plotter_Canvas_Type; Align : String)
    is
       Context        : Context_2D_Type;
-      Text_Alignment : Alignment_Type := Left;
+      Text_Alignment : Alignment_Type;
    begin
       case Align is
          when "left" =>
@@ -759,7 +759,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
          when "end" =>
             Text_Alignment := To_End;
          when others =>
-            Text_Alignment := Left;
+            Text_Alignment := At_Start;
       end case;
 
       Get_Context (Context, Plotter);
