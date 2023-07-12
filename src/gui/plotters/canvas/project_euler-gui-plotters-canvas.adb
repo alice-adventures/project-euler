@@ -194,7 +194,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
 
       Context.Begin_Path;
       Context.Clear_Rectangle
-        ([0, 0, Plotter.Drawing.Width, Plotter.Drawing.Height]);
+        ((0, 0, Plotter.Drawing.Width, Plotter.Drawing.Height));
    end Clear_Plot;
 
    -----------------------
@@ -556,9 +556,9 @@ package body Project_Euler.GUI.Plotters.Canvas is
       Context.Line_Width (2);
       Context.Line_Join (Value => Round);
       Context.Rectangle
-        ([Sx (Plotter, X_Min), Sy (Plotter, Y_Min),
+        ((Sx (Plotter, X_Min), Sy (Plotter, Y_Min),
          Sx (Plotter, X_Max) - Sx (Plotter, X_Min),
-         Sy (Plotter, Y_Max) - Sy (Plotter, Y_Min)]);
+         Sy (Plotter, Y_Max) - Sy (Plotter, Y_Min)));
       Context.Stroke;
    end Draw_Axes_Rectangle;
 
@@ -675,7 +675,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
       Get_Context (Context, Plotter);
 
       Context.Begin_Path;
-      Context.Rectangle (Rectangle => [X, Y, Width, Height]);
+      Context.Rectangle (Rectangle => (X, Y, Width, Height));
       Context.Stroke;
    end Rectangle;
 
@@ -697,7 +697,7 @@ package body Project_Euler.GUI.Plotters.Canvas is
       Get_Context (Context, Plotter);
 
       Context.Begin_Path;
-      Context.Rectangle (Rectangle => [X, Y, Width, Height]);
+      Context.Rectangle (Rectangle => (X, Y, Width, Height));
       Context.Fill;
    end Fill_Rectangle;
 
